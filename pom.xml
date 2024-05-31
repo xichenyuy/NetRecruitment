@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.netmen</groupId>
+	<artifactId>net-recruitment</artifactId>
+	<version>1.0.0</version>
+
+	<name>netrecruitment</name>
+	<description>recruitment system code by netmen</description>
+
+	<!-- 继承的父模块 -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.2.6</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<!-- 当前项目版本 -->
+		<netrecruitment.version>1.0.0</netrecruitment.version>
+		<!-- java版本 -->
+		<java.version>17</java.version>
+		<!-- 其他依赖版本 -->
+		<mysql.version>8.0.33</mysql.version>
+		<mybatis.version>3.0.3</mybatis.version>
+		<mybatisplus.version>3.5.5</mybatisplus.version>
+		<springdoc-openapi.version>2.2.0</springdoc-openapi.version>
+	</properties>
+
+	<!-- 模块 -->
+	<modules>
+		<module>web</module>
+		<module>api</module>
+		<module>common</module>
+		<module>dao</module>
+		<module>service</module>
+	</modules>
+	<!-- 打包 -->
+	<packaging>pom</packaging>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- mysql数据库 -->
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql.version}</version>
+			</dependency>
+			<!-- SpringBoot 3.0 需要 mybatis-spring 3.0.X 版本 -->
+			<dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis-spring</artifactId>
+				<version>${mybatis.version}</version>
+			</dependency>
+			<!-- mybatis plus -->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-boot-starter</artifactId>
+				<version>${mybatisplus.version}</version>
+			</dependency>
+			<!-- 用于替换基于SpringFox的Swagger 2 为swagger 3 ，并转向使用OpenAPI 3规范 -->
+			<dependency>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+				<version>${springdoc-openapi.version}</version>
+			</dependency>
+
+
+			<!-- 模块 -->
+			<dependency>
+				<groupId>org.netmen</groupId>
+				<artifactId>api</artifactId>
+				<version>${netrecruitment.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.netmen</groupId>
+				<artifactId>common</artifactId>
+				<version>${netrecruitment.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.netmen</groupId>
+				<artifactId>dao</artifactId>
+				<version>${netrecruitment.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.netmen</groupId>
+				<artifactId>service</artifactId>
+				<version>${netrecruitment.version}</version>
+			</dependency>
+			<!-- 在ruoyi中启动器无需引入 原因可能是build在web中-->
+<!--			<dependency>-->
+<!--				<groupId>org.netmen</groupId>-->
+<!--				<artifactId>web</artifactId>-->
+<!--				<version>${netrecruitment.version}</version>-->
+<!--			</dependency>-->
+		</dependencies>
+	</dependencyManagement>
+</project>
