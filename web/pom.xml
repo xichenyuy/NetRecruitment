@@ -42,7 +42,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>org.netmen.WebApplication</mainClass>
+                    <mainClass>org.netmen.NetRecruitmentApplication</mainClass>
                     <layout>ZIP</layout>
                 </configuration>
                 <executions>
