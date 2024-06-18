@@ -23,6 +23,14 @@
             <!-- 仅测试环境生效 -->
             <scope>test</scope>
         </dependency>
+        <!-- 热部署 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
         <!-- openAPI包，替换 Swagger 的 SpringFox -->
         <dependency>
             <groupId>org.springdoc</groupId>
