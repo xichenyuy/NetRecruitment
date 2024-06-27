@@ -28,6 +28,8 @@
 		<mybatis.version>3.0.3</mybatis.version>
 		<mybatisplus.version>3.5.5</mybatisplus.version>
 		<springdoc-openapi.version>2.2.0</springdoc-openapi.version>
+		<javacv.version>1.5.1</javacv.version>
+
 	</properties>
 
 	<!-- 模块 -->
@@ -67,7 +69,12 @@
 				<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 				<version>${springdoc-openapi.version}</version>
 			</dependency>
-
+			<!-- javacv -->
+			<dependency>
+				<groupId>org.bytedeco</groupId>
+				<artifactId>javacv-platform</artifactId>
+				<version>${javacv.version}</version>
+			</dependency>
 
 			<!-- 模块 -->
 			<dependency>
