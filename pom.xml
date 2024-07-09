@@ -28,7 +28,7 @@
 		<mybatis.version>3.0.3</mybatis.version>
 		<mybatisplus.version>3.5.5</mybatisplus.version>
 		<springdoc-openapi.version>2.2.0</springdoc-openapi.version>
-		<javacv.version>1.5.1</javacv.version>
+		<javacv.version>1.5.6</javacv.version>
 
 	</properties>
 
