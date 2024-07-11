@@ -6,8 +6,10 @@ import jakarta.websocket.server.PathParam;
 import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.javacpp.Loader;
 import org.netmen.common.utils.MediaVideoTransfer;
+import org.netmen.dao.dto.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -72,10 +74,38 @@ public class MediaVideoController {
         }
     }
 
+    @GetMapping("/rtspToFlv")
+    @Operation(summary = "rtsp流转flv", description = "rtsp流转flv和rtmp")
+    public ApiResponse rtspToFlv(@RequestParam(name = "rtspUrl", required = false) String rtspUrl) {
+        // rtmp地址
+        String rtmpDir = "rtmp://localhost:1935/myapp/yang";
 
+        String ffmpeg = Loader.load(org.bytedeco.ffmpeg.ffmpeg.class);
 
-
-
+        ProcessBuilder pb = new ProcessBuilder(ffmpeg,
+                "-re",
+                "-rtsp_transport", "tcp",
+                "-i", rtspUrl,
+                "-f", "flv",
+                "-vcodec", "copy",
+//                "-vcodec", "h264",
+//                "-vprofile", "baseline",
+//                "-acodec", "aac",
+                "-acodec", "copy",
+                "-ar", "44100",
+                "-ac", "1",
+                "-q:v", "10",
+                rtmpDir
+        );
+        try{
+            pb.inheritIO().start().waitFor();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return ApiResponse.success("http://localhost:80/live?port=1935&app=myapp&stream=yang");
+    }
 }
 
 

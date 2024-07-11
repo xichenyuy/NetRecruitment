@@ -11,7 +11,7 @@ public class ApiResponse {
     // 构造器、getter和setter方法...
 
     // 创建一个静态方法来构建成功的响应
-    public ApiResponse success(String message) {
+    public static ApiResponse success(String message) {
         ApiResponse response = new ApiResponse();
         response.setCode(0); // 设置状态码为0表示成功
         response.setMessage(message);
