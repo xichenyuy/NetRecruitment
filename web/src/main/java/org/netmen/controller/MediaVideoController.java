@@ -7,10 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.javacpp.Loader;
 import org.netmen.common.utils.MediaVideoTransfer;
 import org.netmen.dao.dto.ApiResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.netmen.dao.dto.RtspDto;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -80,9 +78,11 @@ public class MediaVideoController {
 
     ExecutorService executorService = Executors.newFixedThreadPool(10); //创建线程池
 
-    @GetMapping("/rtspToFlv")
+    @PostMapping("/rtspToFlv")
     @Operation(summary = "rtsp流转flv", description = "rtsp流转flv和rtmp")
-    public ApiResponse rtspToFlv(@RequestParam(name = "rtspUrl", required = false) String rtspUrl) {
+    public ApiResponse rtspToFlv(@RequestBody RtspDto rtspDto) {
+        // rtsp地址
+        String rtspUrl = rtspDto.getRtspUrl();
         // rtmp地址
         String rtmpDir = "rtmp://localhost:1935/myapp/yang";
 
