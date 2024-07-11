@@ -96,6 +96,8 @@ public class MediaVideoTransfer {
                  */
                 recorder.setTimestamp(grabber.getTimestamp());
                 recorder.record(frame);
+                //在此刷包
+//                grabber.flush();
             }
             stop();
             reset();
