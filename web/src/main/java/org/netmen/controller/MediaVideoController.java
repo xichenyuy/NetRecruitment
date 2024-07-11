@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Slf4j
 @RestController
@@ -74,6 +77,9 @@ public class MediaVideoController {
         }
     }
 
+
+    ExecutorService executorService = Executors.newFixedThreadPool(10); //创建线程池
+
     @GetMapping("/rtspToFlv")
     @Operation(summary = "rtsp流转flv", description = "rtsp流转flv和rtmp")
     public ApiResponse rtspToFlv(@RequestParam(name = "rtspUrl", required = false) String rtspUrl) {
@@ -97,13 +103,13 @@ public class MediaVideoController {
                 "-q:v", "10",
                 rtmpDir
         );
-        try{
-            pb.inheritIO().start().waitFor();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        Future<?> future = executorService.submit(()->{
+            try{
+                pb.inheritIO().start().waitFor();
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
         return ApiResponse.success("http://localhost:80/live?port=1935&app=myapp&stream=yang");
     }
 }
