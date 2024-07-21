@@ -54,12 +54,16 @@ public class MediaVideoTransfer {
             grabber.start();
             isStart = true;
             recorder = new FFmpegFrameRecorder(target, grabber.getImageWidth(), grabber.getImageHeight(), grabber.getAudioChannels());
-            //avcodec.AV_CODEC_ID_H264
+            // avcodec.AV_CODEC_ID_H264
+            // FFmpegFrameRecorder不直接支持copy模式，可以尝试不设置具体的编码器
             recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
             //转码格式
             recorder.setFormat("flv");
             //帧率
-            recorder.setFrameRate(grabber.getFrameRate());
+            double frameRate = grabber.getFrameRate();
+            if(frameRate > 0) {
+                recorder.setFrameRate((int)grabber.getFrameRate());
+            }
             //采样率
             recorder.setSampleRate(grabber.getSampleRate());
             //声道
@@ -94,14 +98,13 @@ public class MediaVideoTransfer {
                 /**
                  * 调用图像处理
                  */
-                recorder.setTimestamp(grabber.getTimestamp());
+//                recorder.setTimestamp(grabber.getTimestamp());
                 recorder.record(frame);
-                //在此刷包
-//                grabber.flush();
+
             }
-            stop();
-            reset();
-            log.info("stop recoder");
+//            stop();
+//            reset();
+//            log.info("stop recoder");
         } catch (FrameGrabber.Exception | RuntimeException | FrameRecorder.Exception e) {
             log.error("exception", e);
             stop();
