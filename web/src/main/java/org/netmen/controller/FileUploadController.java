@@ -66,7 +66,7 @@ public class FileUploadController {
         // 注意：这里假设imagePath是有效的，并且已经过适当的验证和清理
         String pythonScriptPath = "D:/code/yolov8/detect.py";
         ProcessBuilder processBuilder = new ProcessBuilder(
-                "D:\\miniconda3\\envs\\py312\\python.exe", pythonScriptPath, imagePath
+                "D:\\dev\\miniconda3\\envs\\py38yolo\\python.exe", pythonScriptPath, imagePath
         );
         processBuilder.redirectErrorStream(true);
 
@@ -118,7 +118,7 @@ public class FileUploadController {
         // 注意：这里假设imagePath是有效的，并且已经过适当的验证和清理
         String pythonScriptPath = "D:/code/yolov8/detect.py";
         ProcessBuilder processBuilder = new ProcessBuilder(
-                "D:\\miniconda3\\envs\\py312\\python.exe", pythonScriptPath, imagePath
+                "D:\\dev\\miniconda3\\envs\\py38yolo\\python.exe", pythonScriptPath, imagePath
         );
         processBuilder.redirectErrorStream(true);
 
