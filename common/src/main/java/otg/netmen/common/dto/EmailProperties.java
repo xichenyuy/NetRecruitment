@@ -2,9 +2,8 @@
 //
 //import lombok.Data;
 //import lombok.Value;
-//import org.springframework.stereotype.Component;
 //
-//@Component
+//@Componet
 //@CP(prefix = "email")
 //@Data
 //public class EmailProperties {
