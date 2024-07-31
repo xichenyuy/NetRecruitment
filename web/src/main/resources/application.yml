@@ -6,11 +6,16 @@ spring:
     #数据库驱动完整类名
     driver-class-name: com.mysql.cj.jdbc.Driver
     #数据库连接url
-    url: jdbc:mysql://localhost:3306/netrecruitment?characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3306/recruitment_test1?characterEncoding=utf-8
     #数据库用户名
     username: root
     #数据库密码
-    password: 1234
+    password: 123456
+
+mybatis-plus:
+  configuration:
+    #数据库下划线命名到java驼峰命名 默认为true
+    map-underscore-to-camel-case: true
 
 email:
   user: 1211903563@qq.com
