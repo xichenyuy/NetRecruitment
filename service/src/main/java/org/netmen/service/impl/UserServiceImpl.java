@@ -19,7 +19,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User findByUsername(String username) {
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(User::getId, username);
+        wrapper.eq(User::getUsername, username);
         return userMapper.selectOne(wrapper);
     }
 
@@ -28,6 +28,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //加密
         String md5String = Md5Util.getMD5String(password);
         //添加
-        userMapper.add(username, md5String);
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(md5String);
+        userMapper.insert(user);
     }
 }
