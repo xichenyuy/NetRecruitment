@@ -26,7 +26,6 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
 
-
         <!-- 模块 -->
         <dependency>
             <groupId>org.netmen</groupId>
