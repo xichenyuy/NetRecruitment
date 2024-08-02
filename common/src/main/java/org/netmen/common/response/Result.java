@@ -1,4 +1,4 @@
-package otg.netmen.common.response;
+package org.netmen.common.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

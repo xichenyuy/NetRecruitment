@@ -7,7 +7,5 @@ import org.netmen.dao.po.User;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-    User findByUsername(String username);
-
-    void add(String username, String md5String);
+    // User findByUsername(String username);
 }
