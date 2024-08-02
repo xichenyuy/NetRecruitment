@@ -23,7 +23,7 @@ public class User {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String username;
-    @JsonIgnore //让springmvc将当前对象转换成json时, 忽略password
+    @JsonIgnore //让springmvc将当前对象转换成json时, 忽略password, 防止user信息连同密码一起返回
     private String password;
     @NotEmpty
     @Pattern(regexp = "^\\S{1,10}$")

@@ -72,37 +72,43 @@ public class UserController {
 
     @PutMapping("/update")
     public Result update(@RequestBody @Validated User user) {
-        userService.updateById(user);
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer userId = (Integer) claims.get("id");
+        if(!userId.equals(user.getId())){
+            return Result.error("用户id与token不匹配");
+        }
+        userService.updateInfo(user);
         return Result.success();
     }
 
     @PatchMapping("/updateAvatar")
     public Result updateAvatar(@RequestParam @URL String avatarUrl) {
-        // userService
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer userId = (Integer) claims.get("id");
+        userService.updatePic(userId, avatarUrl);
         return Result.success();
     }
 
     @PatchMapping("/updatePwd")
     public Result updatePwd(@RequestBody Map<String, String> params) {
-        // //参数校验
-        // String oldPwd = params.get("old_pwd");
-        // String newPwd = params.get("new_pwd");
-        // String rePwd = params.get("re_pwd");
-        // if(!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)) {
-        //     return Result.error("缺少必要参数");
-        // }
-        //
-        // //根据用户名获得源密码
-        // Map<String, Object> map = ThreadLocalUtil.get();
-        // String username = map.get("username").toString();
-        // User loginUser = userService.findByUsername(username);
-        // if(!loginUser.getPassword().equals(Md5Util.getMD5String(oldPwd))){
-        //     return Result.error("源密码填写不正确");
-        // }
-        // if(!rePwd.equals(newPwd)){
-        //     return Result.error("两次填写的新密码不一致");
-        // }
-
+        //参数校验
+        String oldPwd = params.get("old_pwd");
+        String newPwd = params.get("new_pwd");
+        String rePwd = params.get("re_pwd");
+        if(!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)) {
+            return Result.error("缺少必要参数");
+        }
+        //根据用户名获得源密码
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String username = map.get("username").toString();
+        User loginUser = userService.findByUsername(username);
+        if(!loginUser.getPassword().equals(Md5Util.getMD5String(oldPwd))){
+            return Result.error("源密码填写不正确");
+        }
+        if(!rePwd.equals(newPwd)){
+            return Result.error("两次填写的新密码不一致");
+        }
+        userService.updatePwd(loginUser, newPwd);
         return Result.success();
     }
 }
