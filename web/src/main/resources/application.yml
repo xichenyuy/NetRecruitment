@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: dev
+
+
+#公共配置
+
+mybatis-plus:
+  configuration:
+    #数据库下划线命名到java驼峰命名 默认为true
+    map-underscore-to-camel-case: true
