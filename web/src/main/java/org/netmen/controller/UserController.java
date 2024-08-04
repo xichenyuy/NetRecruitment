@@ -64,7 +64,6 @@ public class UserController {
             return Result.success(token);
         }
         return Result.error("密码错误");
-
     }
 
     @GetMapping("/userInfo")
