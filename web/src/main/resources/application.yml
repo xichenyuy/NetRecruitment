@@ -13,4 +13,6 @@ mybatis-plus:
   configuration:
     #数据库下划线命名到java驼峰命名 默认为true
     map-underscore-to-camel-case: true
+    #控制台打印日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 

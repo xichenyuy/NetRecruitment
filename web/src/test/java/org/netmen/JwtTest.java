@@ -1,4 +1,4 @@
-package org.netmen.common;
+package org.netmen;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

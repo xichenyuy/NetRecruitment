@@ -32,6 +32,7 @@ public class User {
     @Email
     private String email;
     private String userPic;
+    private Boolean enabled;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

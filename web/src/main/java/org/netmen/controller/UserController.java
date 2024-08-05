@@ -36,7 +36,6 @@ public class UserController {
     public Result register(@Pattern(regexp = "^\\S{5,16}$") String username, @Pattern(regexp = "^\\S{5,16}$") String password) {
         User user = userService.findByUsername(username);
         if (user == null) {
-            System.out.println(username + " " + password);
             userService.register(username, password);
             return Result.success();
         } else {
