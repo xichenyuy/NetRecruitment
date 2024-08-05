@@ -28,6 +28,8 @@
 		<mybatis.version>3.0.3</mybatis.version>
 		<mybatisplus.version>3.5.5</mybatisplus.version>
 		<springdoc-openapi.version>2.2.0</springdoc-openapi.version>
+		<jakarta-mail.version>2.0.3</jakarta-mail.version>
+
 	</properties>
 
 	<!-- 模块 -->
@@ -66,6 +68,11 @@
 				<groupId>org.springdoc</groupId>
 				<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 				<version>${springdoc-openapi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.angus</groupId>
+				<artifactId>jakarta.mail</artifactId>
+				<version>${jakarta-mail.version}</version>
 			</dependency>
 
 

@@ -1,13 +1,11 @@
-server:
-  port: 8081
-
 spring:
-  datasource:
-    #数据库驱动完整类名
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    #数据库连接url
-    url: jdbc:mysql://localhost:3306/netrecruitment?characterEncoding=utf-8
-    #数据库用户名
-    username: root
-    #数据库密码
-    password: 1234
+  profiles:
+    active: dev
+
+
+#公共配置
+
+mybatis-plus:
+  configuration:
+    #数据库下划线命名到java驼峰命名 默认为true
+    map-underscore-to-camel-case: true
