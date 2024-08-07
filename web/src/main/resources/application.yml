@@ -2,9 +2,15 @@ spring:
   profiles:
     active: dev
   security:
-    user:
-      name: admin
-      password: 123456
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: Ov23liYNiC1Q5DCZlIAQ
+            client-secret: 69b777dc7945ae673cc56e549262dd8e3cacb84b
+
+
+
 
 
 #公共配置

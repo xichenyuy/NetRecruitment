@@ -28,7 +28,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry){ //使用springmvc解决跨域
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8080")
+                .allowedOrigins("http://localhost:8080", "http://localhost:5173")
                 .allowedHeaders("*")
                 .allowedMethods("*");
     }
