@@ -1,4 +1,4 @@
-package org.netmen.config;
+package org.netmen.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

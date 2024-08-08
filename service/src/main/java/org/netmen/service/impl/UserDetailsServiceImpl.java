@@ -7,6 +7,7 @@ import org.netmen.dao.mapper.UserMapper;
 import org.netmen.dao.po.User;
 import org.netmen.dao.vo.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,13 +28,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if(username == null || username.isEmpty()) {
+            throw new InternalAuthenticationServiceException("");
+        }
         //根据用户名查询用户信息
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(User::getUsername, username);
         User user = userMapper.selectOne(lambdaQueryWrapper);
-        //判断密码是否正确
-        if(Objects.isNull(user)){
-            throw new UsernameNotFoundException(username);
+        if(user == null) {
+            throw new UsernameNotFoundException("");    //会匹配BadCredentialsException
         }
         //授权列表
         List<String> list = permissionMapper.getPermissionByUserId(user.getId());

@@ -104,7 +104,7 @@ public class WebSecurityConfig {
         });
 
         http.sessionManagement(session ->{
-            session.maximumSessions(1).expiredSessionStrategy(new MySessionInformationExpiredStrategy());
+            session.maximumSessions(1).expiredSessionStrategy(new MySessionInformationExpiredStrategy());   //多个浏览器只创建1个会话
         });
         return http.build();
     }

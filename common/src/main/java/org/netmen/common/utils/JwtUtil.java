@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class JwtUtil {
     private static final String KEY = "test";
-    private static final Long TTL = 1000L * 60 * 60;
+    public static final Long TTL = 1000L * 60 * 60;
 
     //生成id
     private static String getUUID(){

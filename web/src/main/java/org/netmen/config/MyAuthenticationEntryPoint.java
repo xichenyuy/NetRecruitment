@@ -4,6 +4,9 @@ import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -22,7 +25,13 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         HashMap result = new HashMap();
         result.put("code", -1);
-        result.put("message", localizedMessage);
+        if(authException instanceof BadCredentialsException){
+            result.put("message", localizedMessage);
+        } else if(authException instanceof InternalAuthenticationServiceException){
+            result.put("message", "用户名为空");
+        } else{
+            result.put("message", "匿名用户无权限访问");
+        }
 
         //将结果转化为json字符串
         String json = JSON.toJSONString(result);

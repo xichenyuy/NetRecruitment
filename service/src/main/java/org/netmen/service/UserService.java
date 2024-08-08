@@ -3,10 +3,12 @@ package org.netmen.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.netmen.dao.po.User;
 
+import java.util.Map;
+
 public interface UserService extends IService<User> {
     User findByUsername(String username);
 
-    String login(User user);
+    Map<String, Object> login(User user);
 
     void register(String username, String password);
 

@@ -2,15 +2,21 @@ package org.netmen.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.URL;
 import org.netmen.common.utils.JwtUtil;
 import org.netmen.common.utils.ThreadLocalUtil;
 import org.netmen.dao.po.User;
+import org.netmen.exception.MyAuthenticationException;
 import org.netmen.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +36,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
     @PostMapping("/register")
@@ -67,11 +74,29 @@ public class UserController {
 //    }
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
-        String jwt = userService.login(user);
-        if(StringUtils.hasLength(jwt)) {
-            return Result.success("登录成功");
+        Map<String, Object> map = userService.login(user);
+        if(!map.get("token").equals("") && !map.get("username").equals("")) {
+            return Result.success(map);
         }
         return Result.error("登录失败");
+    }
+
+    @PostMapping("logout")
+    public Result logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("Authorization");
+        if(StringUtils.isEmpty(token)) {
+            token = request.getParameter("token");
+        }
+        //获取用户相关信息
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null) {
+            //清空用户信息
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+            //清空redis里的token
+            stringRedisTemplate.delete(token);
+
+        }
+        return Result.success("退出成功");
     }
 
     @GetMapping("/userInfo")

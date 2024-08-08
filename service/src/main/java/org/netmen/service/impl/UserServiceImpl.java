@@ -13,14 +13,19 @@ import org.netmen.dao.po.User;
 import org.netmen.dao.vo.LoginUser;
 import org.netmen.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.netmen.common.utils.Md5Util;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
@@ -31,6 +36,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private DBUserDetailsManager dbUserDetailsManager;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
 
     @Override
     public User findByUsername(String username) {
@@ -41,8 +49,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userMapper.selectOne(wrapper);
     }
 
+
+
+
     @Override
-    public String login(User user) {
+    public void register(String username, String password) {
+        UserDetails userDetails = org.springframework.security.core.userdetails.User
+                .withDefaultPasswordEncoder()
+                .username(username)
+                .password(password)
+                .build();
+        dbUserDetailsManager.createUser(userDetails);
+    }
+
+    @Override
+    public Map<String, Object> login(User user) {
         //封装authentication对象
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
         //校验
@@ -54,18 +75,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         //生成jwt 使用fastjson将对象转换为json字符串
         String jsonString = JSON.toJSONString(loginUser);
-        //调用jwt工具生成令牌并返回
-        return JwtUtil.createJwt(jsonString, null);
-    }
-
-    @Override
-    public void register(String username, String password) {
-        UserDetails userDetails = org.springframework.security.core.userdetails.User
-                .withDefaultPasswordEncoder()
-                .username(username)
-                .password(password)
-                .build();
-        dbUserDetailsManager.createUser(userDetails);
+        //调用jwt工具生成令牌
+        String jwt = JwtUtil.createJwt(jsonString, null);
+        //存储redis白名单 key=jwt value=jwt
+        stringRedisTemplate.opsForValue().set(jwt, jwt, JwtUtil.TTL/1000, TimeUnit.SECONDS);
+        Map<String, Object> map = new HashMap<>();
+        map.put("token", jwt);
+        map.put("username", loginUser.getUsername());
+        return map;
     }
 
     @Override
