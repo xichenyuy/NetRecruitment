@@ -19,6 +19,7 @@ import org.netmen.common.utils.Md5Util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -64,6 +65,14 @@ public class UserController {
 //        }
 //        return Result.error("密码错误");
 //    }
+    @PostMapping("/login")
+    public Result login(@RequestBody User user) {
+        String jwt = userService.login(user);
+        if(StringUtils.hasLength(jwt)) {
+            return Result.success("登录成功");
+        }
+        return Result.error("登录失败");
+    }
 
     @GetMapping("/userInfo")
     public Result<User> userInfo(/*@RequestHeader(name = "Authorization") String token*/) {

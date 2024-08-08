@@ -1,8 +1,10 @@
 package org.netmen.config;
 
 import org.netmen.dao.config.DBUserDetailsManager;
+import org.netmen.filter.JwtAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -28,7 +31,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 // @EnableWebSecurity  //开启springSecurity的自定义配置 如果是springboot项目可以省略该注解 autoconfig会整合预定义配置
 public class WebSecurityConfig {
-    private static final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     /*@Bean
     public UserDetailsService userDetailsService() {
@@ -65,19 +70,21 @@ public class WebSecurityConfig {
         http.csrf(csrf -> csrf.disable());
         //配置请求的拦截方式
         http.authorizeRequests(authorize -> authorize
-                .requestMatchers("/user/register","/login")
+                .requestMatchers("/user/register","/user/login")
                 .permitAll()
                 //对所有请求开启授权保护
                 .anyRequest()
                 //已认证的请求会被自动授权
                 .authenticated()
         );
+        //配置过滤器的执行顺序
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         //跨域 暂时使用默认跨域
         http.cors(withDefaults());
 
 
         http.formLogin(form->{
-            form.loginPage("/login")
+            form.loginPage("/user/login")
                     .successHandler(new MyAuthenticationSuccessHandler())   //认证成功
                     .failureHandler(new MyAuthenticationFailureHandler())   //认证失败
             ;

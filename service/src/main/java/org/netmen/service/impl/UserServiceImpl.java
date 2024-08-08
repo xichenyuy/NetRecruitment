@@ -1,18 +1,26 @@
 package org.netmen.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import org.netmen.common.utils.JwtUtil;
 import org.netmen.dao.config.DBUserDetailsManager;
 import org.netmen.dao.mapper.UserMapper;
 import org.netmen.dao.po.User;
+import org.netmen.dao.vo.LoginUser;
 import org.netmen.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.netmen.common.utils.Md5Util;
+
+import java.util.Objects;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
@@ -21,6 +29,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private UserMapper userMapper;
     @Resource
     private DBUserDetailsManager dbUserDetailsManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Override
     public User findByUsername(String username) {
@@ -29,6 +39,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LambdaQueryWrapper<User> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(User::getUsername, username);
         return userMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public String login(User user) {
+        //封装authentication对象
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+        //校验
+        Authentication authenticate = authenticationManager.authenticate(authentication);
+        if(Objects.isNull(authenticate)){
+            throw new RuntimeException("登录失败");
+        }
+        //放入用户信息
+        LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
+        //生成jwt 使用fastjson将对象转换为json字符串
+        String jsonString = JSON.toJSONString(loginUser);
+        //调用jwt工具生成令牌并返回
+        return JwtUtil.createJwt(jsonString, null);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class JwtUtil {
     private static final String KEY = "test";
     private static final Long TTL = 1000L * 60 * 60;
 
-    //生成令牌
+    //生成id
     private static String getUUID(){
         return UUID.randomUUID().toString().replace("-","");
     }
@@ -63,7 +63,7 @@ public class JwtUtil {
      * @param jwt
      * @return
      */
-    public static Claims parseJwt(String jwt) {
+    public static Claims parseJwt(String jwt) throws Exception {
         return Jwts.parser()
                 .setSigningKey(JwtUtil.KEY)
                 .parseClaimsJws(jwt)
