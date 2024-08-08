@@ -28,8 +28,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //判断密码是否正确
         if(Objects.isNull(user)){
             throw new UsernameNotFoundException(username);
-        } else {
-            return new LoginUser(user);
         }
+        //授权
+
+
+        //返回UserDetail对象
+        return new LoginUser(user);
     }
 }
