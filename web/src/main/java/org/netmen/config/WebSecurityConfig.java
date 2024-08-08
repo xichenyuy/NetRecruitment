@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -30,6 +31,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 // @EnableWebSecurity  //开启springSecurity的自定义配置 如果是springboot项目可以省略该注解 autoconfig会整合预定义配置
+@EnableGlobalMethodSecurity(prePostEnabled = true)  //开启接口授权访问配置
 public class WebSecurityConfig {
 
     @Autowired
@@ -97,8 +99,8 @@ public class WebSecurityConfig {
         });
 
         http.exceptionHandling(exception ->{
-            exception.authenticationEntryPoint(new MyAuthenticationEntryPoint());   //请求未认证
-            exception.accessDeniedHandler(new MyAccessDeniedHandler());
+            exception.authenticationEntryPoint(new MyAuthenticationEntryPoint());   //未认证用户无权限处理
+            exception.accessDeniedHandler(new MyAccessDeniedHandler()); //认证用户无权限
         });
 
         http.sessionManagement(session ->{

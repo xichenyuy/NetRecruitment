@@ -10,15 +10,11 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * 未认证入口点处理
+ * 客户端进行认证提交时出现异常 或者是匿名用户访问受限资源的处理器
+ */
 public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    /**
-     * 未认证入口点处理
-     * @param request
-     * @param response
-     * @param authException
-     * @throws IOException
-     * @throws ServletException
-     */
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 

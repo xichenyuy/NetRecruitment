@@ -31,7 +31,7 @@ public class DBUserDetailsManager implements UserDetailsManager, UserDetailsPass
         User user = new User();
         user.setUsername(userDetails.getUsername());
         user.setPassword(userDetails.getPassword());
-        user.setEnabled(true);
+        user.setDisabled(false);
         userMapper.insert(user);
     }
 
