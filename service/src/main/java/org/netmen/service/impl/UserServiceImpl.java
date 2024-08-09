@@ -75,7 +75,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Map<String, Object> map = new HashMap<>();
         map.put("token", jwt);
         map.put("username", loginUser.getUsername());
-        System.out.println(map.toString());
         return map;
     }
 
