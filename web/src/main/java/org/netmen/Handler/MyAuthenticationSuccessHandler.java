@@ -1,4 +1,4 @@
-package org.netmen.config;
+package org.netmen.Handler;
 
 import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.ServletException;
@@ -15,6 +15,7 @@ import java.util.HashMap;
 public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+
 
         Object principal = authentication.getPrincipal();   //用户身份信息
         Object credentials = authentication.getCredentials();   //用户凭证信息

@@ -1,20 +1,9 @@
 spring:
   profiles:
-    active: dev
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: Ov23liYNiC1Q5DCZlIAQ
-            client-secret: 69b777dc7945ae673cc56e549262dd8e3cacb84b
-
-
-
+    active: test3
 
 
 #公共配置
-
 mybatis-plus:
   configuration:
     #数据库下划线命名到java驼峰命名 默认为true
@@ -22,3 +11,8 @@ mybatis-plus:
     #控制台打印日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+
+#todo
+#进一步配置druid和redis
+#统一配置时间json format
+#配置mybatis的逻辑删除统一字段 mapper地址

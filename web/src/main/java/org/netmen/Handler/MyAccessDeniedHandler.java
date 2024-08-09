@@ -1,4 +1,4 @@
-package org.netmen.config;
+package org.netmen.Handler;
 
 import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.ServletException;
@@ -23,6 +23,6 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
 
         //返回json给前端
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().println(json);
+        response.getWriter().println();
     }
 }

@@ -6,10 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.URL;
-import org.netmen.common.utils.JwtUtil;
 import org.netmen.common.utils.ThreadLocalUtil;
 import org.netmen.dao.po.User;
-import org.netmen.exception.MyAuthenticationException;
 import org.netmen.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -20,13 +18,10 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.netmen.common.response.Result;
+import org.netmen.common.result.Result;
 import org.netmen.common.utils.Md5Util;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/user")
@@ -47,7 +42,7 @@ public class UserController {
             userService.register(username, password);
             return Result.success();
         } else {
-            return Result.error("用户名已被占用");
+            return Result.error().message("用户名已被占用");
         }
     }
 
@@ -76,9 +71,9 @@ public class UserController {
     public Result login(@RequestBody User user) {
         Map<String, Object> map = userService.login(user);
         if(!map.get("token").equals("") && !map.get("username").equals("")) {
-            return Result.success(map);
+            return Result.success().data(map);
         }
-        return Result.error("登录失败");
+        return Result.error().message("登录失败");
     }
 
     @PostMapping("logout")
@@ -96,61 +91,61 @@ public class UserController {
             stringRedisTemplate.delete(token);
 
         }
-        return Result.success("退出成功");
-    }
-
-    @GetMapping("/userInfo")
-    public Result<User> userInfo(/*@RequestHeader(name = "Authorization") String token*/) {
-       // Map<String, Object> claims = JwtUtil.parseToken(token);
-       // String username = (String) claims.get("username");
-        Map<String, Object> claims = ThreadLocalUtil.get();
-        String username = (String) claims.get("username");
-        User user = userService.findByUsername(username);
-        return Result.success(user);
-    }
-
-    @PutMapping("/update")
-    public Result update(@RequestBody @Validated User user) {
-        Map<String, Object> claims = ThreadLocalUtil.get();
-        Integer userId = (Integer) claims.get("id");
-        if(!userId.equals(user.getId())){
-            return Result.error("用户id与token不匹配");
-        }
-        userService.updateInfo(user);
         return Result.success();
     }
 
-    @PatchMapping("/updateAvatar")
-    public Result updateAvatar(@RequestParam @URL String avatarUrl) {
-        Map<String, Object> claims = ThreadLocalUtil.get();
-        Integer userId = (Integer) claims.get("id");
-        userService.updatePic(userId, avatarUrl);
-        return Result.success();
-    }
-
-    @PatchMapping("/updatePwd")
-    public Result updatePwd(@RequestBody Map<String, String> params, @RequestHeader("Authorization") String token) {
-        //参数校验
-        String oldPwd = params.get("old_pwd");
-        String newPwd = params.get("new_pwd");
-        String rePwd = params.get("re_pwd");
-        if(!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)) {
-            return Result.error("缺少必要参数");
-        }
-        //根据用户名获得源密码
-        Map<String, Object> map = ThreadLocalUtil.get();
-        String username = map.get("username").toString();
-        User loginUser = userService.findByUsername(username);
-        if(!loginUser.getPassword().equals(Md5Util.getMD5String(oldPwd))){
-            return Result.error("源密码填写不正确");
-        }
-        if(!rePwd.equals(newPwd)){
-            return Result.error("两次填写的新密码不一致");
-        }
-        userService.updatePwd(loginUser, newPwd);
-        //删除redis中对应的token
-        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        operations.getOperations().delete(token);
-        return Result.success();
-    }
+//    @GetMapping("/userInfo")
+//    public Result<User> userInfo(/*@RequestHeader(name = "Authorization") String token*/) {
+//       // Map<String, Object> claims = JwtUtil.parseToken(token);
+//       // String username = (String) claims.get("username");
+//        Map<String, Object> claims = ThreadLocalUtil.get();
+//        String username = (String) claims.get("username");
+//        User user = userService.findByUsername(username);
+//        return Result.success().data(user);
+//    }
+//
+//    @PutMapping("/update")
+//    public Result update(@RequestBody @Validated User user) {
+//        Map<String, Object> claims = ThreadLocalUtil.get();
+//        Integer userId = (Integer) claims.get("id");
+//        if(!userId.equals(user.getId())){
+//            return Result.error("用户id与token不匹配");
+//        }
+//        userService.updateInfo(user);
+//        return Result.success();
+//    }
+//
+//    @PatchMapping("/updateAvatar")
+//    public Result updateAvatar(@RequestParam @URL String avatarUrl) {
+//        Map<String, Object> claims = ThreadLocalUtil.get();
+//        Integer userId = (Integer) claims.get("id");
+//        userService.updatePic(userId, avatarUrl);
+//        return Result.success();
+//    }
+//
+//    @PatchMapping("/updatePwd")
+//    public Result updatePwd(@RequestBody Map<String, String> params, @RequestHeader("Authorization") String token) {
+//        //参数校验
+//        String oldPwd = params.get("old_pwd");
+//        String newPwd = params.get("new_pwd");
+//        String rePwd = params.get("re_pwd");
+//        if(!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)) {
+//            return Result.error("缺少必要参数");
+//        }
+//        //根据用户名获得源密码
+//        Map<String, Object> map = ThreadLocalUtil.get();
+//        String username = map.get("username").toString();
+//        User loginUser = userService.findByUsername(username);
+//        if(!loginUser.getPassword().equals(Md5Util.getMD5String(oldPwd))){
+//            return Result.error("源密码填写不正确");
+//        }
+//        if(!rePwd.equals(newPwd)){
+//            return Result.error("两次填写的新密码不一致");
+//        }
+//        userService.updatePwd(loginUser, newPwd);
+//        //删除redis中对应的token
+//        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+//        operations.getOperations().delete(token);
+//        return Result.success();
+//    }
 }

@@ -1,26 +1,21 @@
 package org.netmen.config;
 
-import org.netmen.dao.config.DBUserDetailsManager;
+import org.netmen.Handler.MyAccessDeniedHandler;
+import org.netmen.Handler.MyAuthenticationFailureHandler;
+import org.netmen.Handler.MyAuthenticationSuccessHandler;
+import org.netmen.Handler.MyLogoutSuccessHandler;
 import org.netmen.filter.JwtAuthenticationFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -54,10 +49,6 @@ public class WebSecurityConfig {
     //     manager.createUser(User.withDefaultPasswordEncoder().username("user").password("password").roles("USER").build());
     //     return manager;
     // }
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 
     //authentication
     @Bean
@@ -84,13 +75,12 @@ public class WebSecurityConfig {
         //跨域 暂时使用默认跨域
         http.cors(withDefaults());
 
-
+        //使用表单授权
         http.formLogin(form->{
-            form.loginPage("/user/login")
-                    .successHandler(new MyAuthenticationSuccessHandler())   //认证成功
-                    .failureHandler(new MyAuthenticationFailureHandler())   //认证失败
-            ;
-        });  //使用表单授权
+            // form.loginPage("/user/login");   //自定义登录接口 不走默认登录
+            form.successHandler(new MyAuthenticationSuccessHandler());   //认证成功
+            form.failureHandler(new MyAuthenticationFailureHandler());   //认证失败
+        });
         //.httpBasic(withDefaults()); //使用浏览器弹出的默认授权方式 通常是无特殊样式的弹出框
 
         //注销
@@ -108,16 +98,4 @@ public class WebSecurityConfig {
         });
         return http.build();
     }
-
-    private CorsConfigurationSource corsConfigurationSource(){
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
-
 }

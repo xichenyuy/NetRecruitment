@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
 import org.netmen.common.utils.JwtUtil;
-import org.netmen.dao.config.DBUserDetailsManager;
 import org.netmen.dao.mapper.UserMapper;
 import org.netmen.dao.po.User;
 import org.netmen.dao.vo.LoginUser;
@@ -20,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.netmen.common.utils.Md5Util;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,14 +30,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private UserMapper userMapper;
-    @Resource
-    private DBUserDetailsManager dbUserDetailsManager;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-
+    //设置username为唯一索引 可以根据username查到唯一用户
     @Override
     public User findByUsername(String username) {
         /*QueryWrapper：由于是字符串形式的条件拼接，编译时无法检查其中的错误和类型不匹配问题，所以需要开发人员自行保证查询条件的正确性。
@@ -49,17 +45,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userMapper.selectOne(wrapper);
     }
 
-
-
-
     @Override
     public void register(String username, String password) {
-        UserDetails userDetails = org.springframework.security.core.userdetails.User
-                .withDefaultPasswordEncoder()
-                .username(username)
-                .password(password)
-                .build();
-        dbUserDetailsManager.createUser(userDetails);
+//        UserDetails userDetails = org.springframework.security.core.userdetails.User
+//                .withDefaultPasswordEncoder()
+//                .username(username)
+//                .password(password)
+//                .build();
+//        dbUserDetailsManager.createUser(userDetails);
     }
 
     @Override
@@ -82,6 +75,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Map<String, Object> map = new HashMap<>();
         map.put("token", jwt);
         map.put("username", loginUser.getUsername());
+        System.out.println(map.toString());
         return map;
     }
 
