@@ -71,7 +71,7 @@ public class UserController {
     public Result login(@RequestBody User user) {
         Map<String, Object> map = userService.login(user);
         if(!map.get("token").equals("") && !map.get("username").equals("")) {
-            return Result.success().data(map);
+            return Result.success().message("登录成功").data(map);
         }
         return Result.error().message("登录失败");
     }
@@ -89,9 +89,8 @@ public class UserController {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
             //清空redis里的token
             stringRedisTemplate.delete(token);
-
         }
-        return Result.success();
+        return Result.success().message("退出系统成功");
     }
 
 //    @GetMapping("/userInfo")

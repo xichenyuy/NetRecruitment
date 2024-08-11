@@ -34,11 +34,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if(!uri.equals("/user/login")) { //登录接口直接放行
                this.validateToken(request);
             }
+            //放行
+            filterChain.doFilter(request, response);
         } catch (AuthenticationException e) {
             new MyAuthenticationFailureHandler().onAuthenticationFailure(request, response, e);
         }
-        //放行
-        filterChain.doFilter(request, response);
     }
 
     //用于token校验

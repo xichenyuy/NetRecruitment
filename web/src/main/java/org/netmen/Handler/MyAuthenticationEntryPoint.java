@@ -1,11 +1,11 @@
-package org.netmen.config;
+package org.netmen.Handler;
 
 import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.netmen.common.result.Result;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -23,14 +23,14 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         String localizedMessage = authException.getLocalizedMessage();
 
-        HashMap result = new HashMap();
-        result.put("code", -1);
+        Result<Object> result = Result.error();
+
         if(authException instanceof BadCredentialsException){
-            result.put("message", localizedMessage);
+            result.code(HttpServletResponse.SC_UNAUTHORIZED).message(localizedMessage);
         } else if(authException instanceof InternalAuthenticationServiceException){
-            result.put("message", "用户名为空");
+            result.code(HttpServletResponse.SC_UNAUTHORIZED).message("用户名为空");
         } else{
-            result.put("message", "匿名用户无权限访问");
+            result.code(600).message("匿名用户无权限访问");
         }
 
         //将结果转化为json字符串

@@ -73,8 +73,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //存储redis白名单 key=jwt value=jwt
         stringRedisTemplate.opsForValue().set(jwt, jwt, JwtUtil.TTL/1000, TimeUnit.SECONDS);
         Map<String, Object> map = new HashMap<>();
-        map.put("token", jwt);
         map.put("username", loginUser.getUsername());
+        map.put("token", jwt);
         return map;
     }
 
