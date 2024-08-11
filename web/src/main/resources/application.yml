@@ -4,15 +4,18 @@ spring:
 
 
 #公共配置
+
 mybatis-plus:
   configuration:
     #数据库下划线命名到java驼峰命名 默认为true
     map-underscore-to-camel-case: true
     #控制台打印日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-#todo
-#进一步配置druid和redis
-#统一配置时间json format
-#配置mybatis的逻辑删除统一字段 mapper地址
+  global-config:
+    db-config:
+      #逻辑删除的字段名
+      logic-delete-field: deleted
+      #逻辑删除的值 1表示已删除
+      logic-delete-value: 1
+      #0表示未删除
+      logic-not-delete-value: 0

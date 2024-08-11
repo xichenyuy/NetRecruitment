@@ -28,7 +28,10 @@
 		<mybatis.version>3.0.3</mybatis.version>
 		<mybatisplus.version>3.5.5</mybatisplus.version>
 		<knife4j.version>4.1.0</knife4j.version>
-		<jakarta-mail.version>2.0.3</jakarta-mail.version>
+		<jjwt.version>0.9.1</jjwt.version>
+		<jaxb-api.version>2.3.1</jaxb-api.version>
+		<druid.version>1.2.20</druid.version>
+		<fastjson2.version>2.0.37</fastjson2.version>
 
 	</properties>
 
@@ -69,10 +72,29 @@
 				<artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
 				<version>${knife4j.version}</version>
 			</dependency>
+			<!-- jjwt -->
 			<dependency>
-				<groupId>org.eclipse.angus</groupId>
-				<artifactId>jakarta.mail</artifactId>
-				<version>${jakarta-mail.version}</version>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt</artifactId>
+				<version>${jjwt.version}</version>
+			</dependency>
+			<!-- jjwt的相关依赖 -->
+			<dependency>
+				<groupId>javax.xml.bind</groupId>
+				<artifactId>jaxb-api</artifactId>
+				<version>${jaxb-api.version}</version>
+			</dependency>
+			<!-- druid数据库链接池 -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid-spring-boot-starter</artifactId>
+				<version>${druid.version}</version>
+			</dependency>
+			<!-- fastjson -->
+			<dependency>
+				<groupId>com.alibaba.fastjson2</groupId>
+				<artifactId>fastjson2</artifactId>
+				<version>${fastjson2.version}</version>
 			</dependency>
 
 
