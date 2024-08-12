@@ -9,6 +9,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/permission")
 @Tag(name = "permission")
@@ -18,7 +20,9 @@ public class PermissionController {
 
     @GetMapping
     private Result list(){
-        return Result.success();
+        List<Permission> list = permissionService.list();
+//        permissionService.page()
+        return Result.success().data(list);
     }
     //TODO
     //分页
@@ -31,6 +35,8 @@ public class PermissionController {
     @PostMapping
     private Result add(@RequestBody PermissionDTO permissionDTO){
         Permission permission = new Permission();
+        //TODO
+        //校验name perms唯一性
         BeanUtils.copyProperties(permissionDTO, permission);
         permissionService.save(permission);
         return Result.success();

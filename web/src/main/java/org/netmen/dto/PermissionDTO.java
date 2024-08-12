@@ -18,6 +18,5 @@ public class PermissionDTO {
     private String icon;
     private Boolean hidden;
     private Boolean disabled;
-    private Boolean deleted;
     private String remark;
 }

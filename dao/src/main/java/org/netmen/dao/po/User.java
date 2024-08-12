@@ -38,9 +38,7 @@ public class User {
     private Boolean disabled;
     private Boolean deleted;
     private String createBy;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     private String updateBy;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 }
