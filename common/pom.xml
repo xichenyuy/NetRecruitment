@@ -40,6 +40,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+<!--        &lt;!&ndash; thymeleaf &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash; thymeleaf 兼容 security 依赖&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.thymeleaf.extras</groupId>-->
+<!--            <artifactId>thymeleaf-extras-springsecurity6</artifactId>-->
+<!--        </dependency>-->
         <!-- redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

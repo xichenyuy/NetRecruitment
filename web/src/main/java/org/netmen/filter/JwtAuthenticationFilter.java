@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -31,7 +32,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String uri = request.getRequestURI();    //localhost:8080/hello
-            if(!uri.equals("/user/login")) { //登录接口直接放行
+            AntPathMatcher antPathMatcher = new AntPathMatcher();
+            boolean isSwaggerRequest = antPathMatcher.match("/swagger**/**", uri);
+            boolean isWebjarsRequest = antPathMatcher.match("/webjars/**", uri);
+            boolean isV3Request = antPathMatcher.match("/v3/**", uri);
+            if(!uri.equals("/user/login") && !uri.equals("/doc.html") && !isSwaggerRequest && !isWebjarsRequest && !isV3Request) { //登录接口直接放行
                this.validateToken(request);
             }
             //放行

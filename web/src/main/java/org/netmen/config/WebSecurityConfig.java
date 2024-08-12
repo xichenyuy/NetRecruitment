@@ -53,7 +53,11 @@ public class WebSecurityConfig {
         http.csrf(csrf -> csrf.disable());
         //配置请求的拦截方式
         http.authorizeRequests(authorize -> authorize
-                .requestMatchers("/user/register","/user/login")
+                .requestMatchers("/user/register", "/user/login",
+                        "/swagger**/**",
+                        "/webjars/**",
+                        "/v3/**",
+                        "/doc.html")
                 .permitAll()
                 //对所有请求开启授权保护
                 .anyRequest()
