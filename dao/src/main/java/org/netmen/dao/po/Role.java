@@ -16,10 +16,8 @@ public class Role {
     private Boolean disabled;
     private Boolean deleted;
     private Integer createBy;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     private Integer updateBy;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
     private String remark;
 }
