@@ -1,7 +1,10 @@
 package org.netmen.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.netmen.common.result.Result;
+import org.netmen.common.utils.BeanCopyUtil;
 import org.netmen.dao.po.Permission;
 import org.netmen.dto.PermissionDTO;
 import org.netmen.service.PermissionService;
@@ -19,15 +22,18 @@ public class PermissionController {
     private PermissionService permissionService;
 
     @GetMapping
-    private Result list(){
-        List<Permission> list = permissionService.list();
-//        permissionService.page()
-        return Result.success().data(list);
+    private Result list(Integer pageNum, Integer pageSize){
+        //传统返回
+        //List<Permission> list = permissionService.list();
+        //return Result.success().data(list);
+        //分页返回
+        Page<Permission> page = new Page<>(pageNum, pageSize);  //Page为IPage接口的实现类 MP实现了简单分页模型
+        Page<Permission> permissionPage = permissionService.page(page);
+        return Result.success().data(permissionPage);
+        //List拷贝类的使用样例 暂时不需要封装PageVo
+        //List<UserVo> userVos = BeanCopyUtils.copyBeanList(userPage.getRecords(), UserVo.class);
+        //PageVo pageVo = new PageVo(userVos, userPage.getTotal());
     }
-    //TODO
-    //分页
-    //git修改测试
-    //test2
 
 
 
@@ -35,12 +41,11 @@ public class PermissionController {
     @PostMapping
     private Result add(@RequestBody PermissionDTO permissionDTO){
         Permission permission = new Permission();
-        //TODO
-        //校验name perms唯一性
         BeanUtils.copyProperties(permissionDTO, permission);
+        //Permission permission1 = BeanCopyUtil.copyBean(permissionDTO, Permission.class);  //使用自定义封装的拷贝工具
         permissionService.save(permission);
         return Result.success();
     }
-
-    //检查Permission对象在swagger中有无参数提示 对象也会有参数提示
+    //TODO
+    //校验name perms唯一性
 }
