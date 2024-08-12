@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Data
 public class BaseEntity {
     @TableId(type = IdType.AUTO)
     private Integer id;
