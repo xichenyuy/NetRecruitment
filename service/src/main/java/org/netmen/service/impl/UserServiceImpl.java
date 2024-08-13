@@ -6,10 +6,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.jsonwebtoken.Claims;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import org.netmen.common.exception.MyAuthenticationException;
 import org.netmen.common.utils.JwtUtil;
 import org.netmen.dao.mapper.UserMapper;
 import org.netmen.dao.po.User;
@@ -17,6 +19,7 @@ import org.netmen.dao.vo.LoginUser;
 import org.netmen.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -71,6 +74,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public void updateInfo(Integer userId, String nickname, String email) {
+        LambdaUpdateWrapper<User> wrapper = Wrappers.lambdaUpdate();
+        wrapper.eq(User::getId, userId).set(User::getNickname, nickname).set(User::getEmail, email);
+        userMapper.update(wrapper);
+    }
+
+    @Override
     public Map<String, Object> login(User user) {
         //封装authentication对象
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
@@ -93,12 +103,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return map;
     }
 
-    @Override
-    public void updateInfo(User user) {
-        LambdaUpdateWrapper<User> wrapper = Wrappers.lambdaUpdate();
-        wrapper.eq(User::getId, user.getId()).set(User::getNickname, user.getNickname()).set(User::getEmail, user.getEmail());
-        userMapper.updateById(user);
-    }
+
 
     @Override
     public void updatePic(Integer userId, String avatarUrl) {
@@ -108,9 +113,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void updatePwd(User user, String newPwd) {
-        user.setUpdateTime(null);//注意不要覆盖更新时间 使用updateById()时设置为null不修改
-        user.setPassword(Md5Util.getMD5String(newPwd));
-        userMapper.updateById(user);
+    public void updatePwd(Integer userId, String newPwd, String token) {
+        //校验令牌正确性
+        LoginUser loginUser = null;
+        try {
+            Claims claims = JwtUtil.parseJwt(token);
+            String jsonString = claims.getSubject();  //取出的是json字符串
+            loginUser = JSON.parseObject(jsonString, LoginUser.class);  //把json字符串转成LoginUser对象
+        } catch (Exception e) {
+            throw new MyAuthenticationException("token校验失败");
+        }
+        if(!Objects.equals(loginUser.getUser().getId(), userId)){
+            throw new MyAuthenticationException("token与用户信息不一致");
+        }
+        //更改密码
+        LambdaUpdateWrapper<User> wrapper = Wrappers.lambdaUpdate();
+        wrapper.eq(User::getId, userId).set(User::getPassword, passwordEncoder.encode(newPwd));
+        userMapper.update(wrapper);
+        //删除redis中对应的token
+        stringRedisTemplate.opsForValue().getOperations().delete(token);
     }
 }

@@ -7,7 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.netmen.common.utils.JwtUtil;
-import org.netmen.exception.MyAuthenticationException;
+import org.netmen.common.exception.MyAuthenticationException;
 import org.netmen.Handler.MyAuthenticationFailureHandler;
 import org.netmen.dao.vo.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
