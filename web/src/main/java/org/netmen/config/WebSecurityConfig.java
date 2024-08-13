@@ -9,6 +9,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -44,6 +47,19 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        //不使用密码加密
+        //return NoOpPasswordEncoder.getInstance();
+
+        //strength=10，即密钥的迭代次数(strength取值在4~31之间，默认为10)
+        //return new BCryptPasswordEncoder(10);
+
+        //利用工厂类PasswordEncoderFactories实现,工厂类内部采用的是委派密码编码方案
+        //Spring Security 5.0之后引入的一个新特性，它会创建一个委托密码编码器，可以根据需要委托给其他的密码编码器
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     //请求放行 SecurityFilterChain为表示15个安全过滤器链的对象

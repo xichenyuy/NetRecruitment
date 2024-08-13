@@ -45,28 +45,7 @@ public class UserController {
             return Result.error().message("用户名已被占用");
         }
     }
-
-//    @PostMapping("/login")
-//    @Operation(summary = "用户登录", description = "传入账号密码登录账号")
-//    public Result<String> login(@Pattern(regexp = "^\\S{5,16}$") String username, @Pattern(regexp = "^\\S{5,16}$") String password) {
-//        User loginUser = userService.findByUsername(username);
-//        //判断用户是否存在
-//        if (loginUser == null) {
-//            return Result.error("用户名错误");
-//        }
-//        //判断密码是否正确
-//        if (Md5Util.getMD5String(password).equals(loginUser.getPassword())) {
-//            Map<String, Object> claims = new HashMap<>();
-//            claims.put("id", loginUser.getId());
-//            claims.put("username", loginUser.getUsername());
-//            String token = JwtUtil.genToken(claims);
-//            //将token存储到redis中
-//            ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-//            operations.set(token, token, 1, TimeUnit.HOURS);
-//            return Result.success(token);
-//        }
-//        return Result.error("密码错误");
-//    }
+    
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
         Map<String, Object> map = userService.login(user);
