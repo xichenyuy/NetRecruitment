@@ -16,4 +16,7 @@ public interface PermissionMapper extends BaseMapper<Permission> {
             "inner join `user` u on u.id = ur.user_id \n" +
             "where u.id = #{userId}")
     List<String> getPermissionByUserId(Integer userId);
+
+    @Select("select distinct perms from permission where !deleted")
+    List<String> getSuperuserPermission();
 }
