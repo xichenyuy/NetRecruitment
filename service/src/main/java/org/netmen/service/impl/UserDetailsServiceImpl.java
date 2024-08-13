@@ -39,7 +39,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("");    //会匹配BadCredentialsException
         }
         //授权列表
-        List<String> list = permissionMapper.getPermissionByUserId(user.getId());
+        List<String> list;
+        if(user.getSuperuser()) {
+            list = permissionMapper.getSuperuserPermission();
+        } else {
+            list = permissionMapper.getPermissionByUserId(user.getId());
+        }
         //返回UserDetail对象
         return new LoginUser(user, list);
     }
