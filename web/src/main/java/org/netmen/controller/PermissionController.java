@@ -1,5 +1,6 @@
 package org.netmen.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,6 +53,10 @@ public class PermissionController {
 
     @PutMapping("/{id}")
     public Result update(@PathVariable Integer id, @RequestBody PermissionDTO permissionDTO){
+        Permission byId = permissionService.getById(id);
+        if(byId == null){
+            return Result.error().message("ID不存在");
+        }
         Permission permission = new Permission();
         BeanUtils.copyProperties(permissionDTO, permission);
         permission.setId(id);
@@ -61,6 +66,10 @@ public class PermissionController {
 
     @DeleteMapping("/{id}")
     public Result delete(@PathVariable Integer id){
+        Permission byId = permissionService.getById(id);
+        if(byId == null){
+            return Result.error().message("ID不存在");
+        }
         permissionService.removeById(id);
         return Result.success();
     }

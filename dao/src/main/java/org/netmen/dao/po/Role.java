@@ -8,16 +8,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class Role {
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+public class Role extends BaseEntity {
     private String name;
     private String roleKey;
     private Boolean disabled;
-    private Boolean deleted;
-    private Integer createBy;
-    private LocalDateTime createTime;
-    private Integer updateBy;
-    private LocalDateTime updateTime;
     private String remark;
 }
