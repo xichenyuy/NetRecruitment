@@ -1,11 +1,15 @@
 package org.netmen.service.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import org.netmen.common.utils.JwtUtil;
 import org.netmen.dao.mapper.UserMapper;
 import org.netmen.dao.po.User;
@@ -17,13 +21,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.netmen.common.utils.Md5Util;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
@@ -34,6 +41,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private AuthenticationManager authenticationManager;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     //设置username为唯一索引 可以根据username查到唯一用户
     @Override
@@ -53,6 +62,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 //                .password(password)
 //                .build();
 //        dbUserDetailsManager.createUser(userDetails);
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password)); //密码加密
+        user.setNickname(username); //默认昵称为用户名
+        user.setDisabled(true); //默认新建的账号不可用 需要管理员审核通过后才能开启账号
+        userMapper.insert(user);
     }
 
     @Override
