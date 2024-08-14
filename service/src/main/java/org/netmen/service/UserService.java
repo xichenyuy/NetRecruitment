@@ -12,11 +12,11 @@ public interface UserService extends IService<User> {
 
     void register(String username, String password);
 
-    void updateInfo(User user);
+    void updateInfo(Integer userId, String nickname, String email);
 
     void updatePic(Integer userId, String avatarUrl);
 
-    void updatePwd(User user, String newPwd);
+    void updatePwd(Integer userId, String newPwd, String token);
 
 
 }

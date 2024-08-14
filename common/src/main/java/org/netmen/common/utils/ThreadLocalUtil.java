@@ -1,5 +1,11 @@
 package org.netmen.common.utils;
 
+/**
+ * 该工具类已经弃用 使用security的上下文
+ *   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+ *   LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+ *   User user = loginUser.getUser();
+ */
 public class ThreadLocalUtil {
     private static final ThreadLocal THREAD_LOCAL = new ThreadLocal();
 

@@ -5,13 +5,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.netmen.common.result.Result;
-import org.netmen.exception.MyAuthenticationException;
+import org.netmen.common.exception.MyAuthenticationException;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 public class MyAuthenticationFailureHandler implements AuthenticationFailureHandler {
     @Override
