@@ -36,7 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             boolean isSwaggerRequest = antPathMatcher.match("/swagger**/**", uri);
             boolean isWebjarsRequest = antPathMatcher.match("/webjars/**", uri);
             boolean isV3Request = antPathMatcher.match("/v3/**", uri);
-            if(!uri.equals("/user/login") && !uri.equals("/doc.html") && !isSwaggerRequest && !isWebjarsRequest && !isV3Request) { //登录接口直接放行
+            if (!uri.equals("/user/login") && !uri.equals("/user/register") && !uri.equals("/doc.html") &&
+                    !isSwaggerRequest && !isWebjarsRequest && !isV3Request) { //登录接口直接放行
                this.validateToken(request);
             }
             //放行
