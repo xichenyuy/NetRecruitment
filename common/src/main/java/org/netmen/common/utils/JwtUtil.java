@@ -9,6 +9,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 public class JwtUtil {
@@ -67,6 +68,15 @@ public class JwtUtil {
         return Jwts.parser()
                 .setSigningKey(JwtUtil.KEY)
                 .parseClaimsJws(jwt)
+                .getBody();
+    }
+
+
+
+    public static Map<String, Object> parseToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(JwtUtil.KEY)
+                .parseClaimsJws(token)
                 .getBody();
     }
 }
