@@ -57,7 +57,7 @@ public class StudentController {
      */
     @DeleteMapping("/{ids}")
     public Result<String> deleteStudent(@PathVariable("ids") List<Integer> ids) {
-        studentService.removeBatchByIds(ids);
+        studentService.deleteByIds(ids);
         return Result.success();
     }
 
