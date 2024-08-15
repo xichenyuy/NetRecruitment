@@ -12,6 +12,7 @@
     <artifactId>service</artifactId>
 
     <dependencies>
+        <!-- 模块 -->
         <dependency>
             <groupId>org.netmen</groupId>
             <artifactId>dao</artifactId>

@@ -2,8 +2,7 @@ package org.netmen.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.netmen.dao.po.User;
-
+import org.netmen.dao.po.Role;
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface RoleMapper extends BaseMapper<Role> {
 }

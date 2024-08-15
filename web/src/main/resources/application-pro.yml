@@ -18,8 +18,3 @@ mybatis-plus:
     #数据库下划线命名到java驼峰命名 默认为true
     map-underscore-to-camel-case: true
 
-email:
-  user: 1211903563@qq.com
-  code:
-  host: smtp.qq.com
-  auth: true
