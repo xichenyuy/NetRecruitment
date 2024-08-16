@@ -3,6 +3,7 @@ package org.netmen.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.netmen.dao.mapper.FirstMapper;
 import org.netmen.dao.mapper.SecondMapper;
 import org.netmen.dao.mapper.StudentMapper;
@@ -11,16 +12,19 @@ import org.netmen.dao.po.Second;
 import org.netmen.dao.po.Student;
 import org.netmen.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> implements StudentService {
 
 
-    private final StudentMapper studentMapper;
+    @Autowired
+    private StudentMapper studentMapper;
 
     @Autowired
     private FirstMapper firstMapper;
@@ -28,9 +32,6 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     @Autowired
     private SecondMapper secondMapper;
 
-    public StudentServiceImpl(StudentMapper studentMapper) {
-        this.studentMapper = studentMapper;
-    }
 
     /**
      * 模糊查询
@@ -51,6 +52,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     /**
      * 新增学生，并添加第一第二志愿信息
+     *
      * @param student
      */
     @Transactional(rollbackFor = Exception.class)
@@ -72,6 +74,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     /**
      * 删除学生，并删除第一第二志愿信息
+     *
      * @param ids
      */
     @Transactional(rollbackFor = Exception.class)
@@ -82,5 +85,49 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         studentMapper.deleteBatchIds(ids);
     }
 
+    /**
+     * 修改学生信息，并第一第二志愿是否更改，如果更改，自动更改
+     *
+     * @param student
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateStudent(Student student) {
+        // 获得修改前的学生记录
+        Student updateBefore = studentMapper.selectById(student.getId());
+        // 第一志愿修改了
+        First first = new First();
+        Second second = new Second();
+        if (student.getFirstId() != null) {
+//            log.info("更改之前的firstId：{}", updateBefore.getFirstId());
+            if (updateBefore.getFirstId() == null || !updateBefore.getFirstId().equals(student.getFirstId())) {
+                first.setDepartmentId(student.getFirstId());
+                first.setFirstId(student.getId());
+                firstMapper.updateById(first);
+            }
+        } else {
+            log.info("student表的firstId：{}", student.getFirstId());
+            first.setDepartmentId(null);
+            log.info("first表的firstId：{}", first.getFirstId());
+            first.setFirstId(student.getId());
+            firstMapper.updateById(first);
+        }
 
+        // 第二志愿修改了
+
+        if (student.getSecondId() != null) {// 是否为空值
+            if (updateBefore.getSecondId() == null || !updateBefore.getSecondId().equals(student.getSecondId())) { // 是否修改
+                second.setDepartmentId(student.getSecondId());
+                second.setSecondId(student.getId());
+                secondMapper.updateById(second);
+            }
+        } else {
+            second.setDepartmentId(null);
+            second.setSecondId(student.getId());
+            secondMapper.updateById(second);
+        }
+
+        // 修改学生信息
+        studentMapper.updateById(student);
+    }
 }

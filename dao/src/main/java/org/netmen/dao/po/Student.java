@@ -1,9 +1,6 @@
 package org.netmen.dao.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +18,7 @@ public class Student{
     private Integer id;
     private String name;
     private String grade;
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Long majorId;
     @TableField(value = "class")
     private Short classId;
@@ -30,7 +28,9 @@ public class Student{
     private String email;
     private Short sex;
     private Short political;
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Integer firstId;
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Integer secondId;
     private Short adjust;
     private String photo;

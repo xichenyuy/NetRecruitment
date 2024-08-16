@@ -23,4 +23,6 @@ public interface StudentService extends IService<Student> {
     void saveStudent(Student student);
 
     void deleteByIds(List<Integer> ids);
+
+    void updateStudent(Student student);
 }

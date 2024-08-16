@@ -47,7 +47,7 @@ public class StudentController {
 //        // 2.添加学生第一志愿信息
 //        boolean save1 = firstService.save(first);
 
-        return Result.success();
+        return Result.success().message("添加成功");
     }
 
     /**
@@ -56,9 +56,9 @@ public class StudentController {
      * @return
      */
     @DeleteMapping("/{ids}")
-    public Result<String> deleteStudent(@PathVariable("ids") List<Integer> ids) {
+    public Result deleteStudent(@PathVariable("ids") List<Integer> ids) {
         studentService.deleteByIds(ids);
-        return Result.success();
+        return Result.success().message("删除成功");
     }
 
     /**
@@ -67,9 +67,9 @@ public class StudentController {
      * @return
      */
     @PutMapping
-    public Result<String> updateStudent(@RequestBody Student student) {
-        studentService.updateById(student);
-        return Result.success();
+    public Result updateStudent(@RequestBody Student student) {
+        studentService.updateStudent(student);
+        return Result.success().message("修改成功");
     }
 
     /**
