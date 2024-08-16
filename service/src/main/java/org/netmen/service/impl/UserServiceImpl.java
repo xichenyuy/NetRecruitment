@@ -133,4 +133,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //删除redis中对应的token
         stringRedisTemplate.opsForValue().getOperations().delete(token);
     }
+
+    @Override
+    public void updateByAdmin(Integer id, User user) {
+        // 重写update方法 防止不允许修改的字段如id username password 和自动填充字段
+        LambdaUpdateWrapper<User> wrapper = Wrappers.lambdaUpdate();
+        wrapper.eq(User::getId, id)
+                .set(User::getNickname, user.getNickname())
+                .set(User::getEmail, user.getEmail())
+                .set(User::getUserPic, user.getUserPic())
+                .set(User::getSuperuser, user.getSuperuser())
+                .set(User::getDisabled, user.getDisabled());
+        userMapper.update(wrapper);
+    }
 }
