@@ -7,9 +7,9 @@ spring:
     #数据库驱动完整类名
     driver-class-name: com.mysql.cj.jdbc.Driver
     #数据库连接url
-    url: jdbc:mysql://localhost:3306/test2?characterEncoding=utf-8
+    url: jdbc:mysql://159.75.187.168:3308/test1?characterEncoding=utf-8
     #数据库用户名
-    username: root
+    username: new_user
     #数据库密码
     password: 123456
     druid:
