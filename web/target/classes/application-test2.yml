@@ -7,11 +7,11 @@ spring:
     #数据库驱动完整类名
     driver-class-name: com.mysql.cj.jdbc.Driver
     #数据库连接url
-    url: jdbc:mysql://159.75.187.168:3306/test6?characterEncoding=utf-8
+    url: jdbc:mysql://159.75.187.168:3308/test2?characterEncoding=utf-8
     #数据库用户名
-    username: new_user
+    username: admin
     #数据库密码
-    password: 123456
+    password: password
     druid:
       #初始化时连接池中创建的数据库连接数量
       initial-size: 20
@@ -52,4 +52,3 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-

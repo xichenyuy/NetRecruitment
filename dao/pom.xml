@@ -48,6 +48,8 @@
             <artifactId>common</artifactId>
         </dependency>
         <dependency>
+<!--             <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId> -->
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>

@@ -1,0 +1,14 @@
+#开发环境
+server:
+  port: 8081
+
+spring:
+  datasource:
+    #数据库驱动完整类名
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #数据库连接url
+    url: jdbc:mysql://159.75.187.168:3306/new_recruitment?characterEncoding=utf-8
+    #数据库用户名
+    username: ghl
+    #数据库密码
+    password: 123456
