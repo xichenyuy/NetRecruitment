@@ -1,4 +1,4 @@
-#开发环境
+#前端专用环境
 server:
   port: 8080
 
@@ -7,7 +7,7 @@ spring:
     #数据库驱动完整类名
     driver-class-name: com.mysql.cj.jdbc.Driver
     #数据库连接url
-    url: jdbc:mysql://159.75.187.168:3308/test2?characterEncoding=utf-8
+    url: jdbc:mysql://159.75.187.168:3308/test5?characterEncoding=utf-8
     #数据库用户名
     username: new_user
     #数据库密码
