@@ -1,4 +1,4 @@
-package org.netmen.Handler.Security;
+package org.netmen.Handler;
 
 import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.ServletException;
@@ -9,6 +9,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class MyAccessDeniedHandler implements AccessDeniedHandler {
     @Override

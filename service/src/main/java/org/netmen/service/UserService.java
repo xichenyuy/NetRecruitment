@@ -18,5 +18,5 @@ public interface UserService extends IService<User> {
 
     void updatePwd(Integer userId, String newPwd, String token);
 
-    void updateByAdmin(Integer id, User user);
+
 }

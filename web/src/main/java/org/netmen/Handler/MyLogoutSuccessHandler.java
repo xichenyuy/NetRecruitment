@@ -1,4 +1,4 @@
-package org.netmen.Handler.Security;
+package org.netmen.Handler;
 
 import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.ServletException;

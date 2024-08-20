@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.netmen.common.utils.JwtUtil;
 import org.netmen.common.exception.MyAuthenticationException;
-import org.netmen.Handler.Security.MyAuthenticationFailureHandler;
+import org.netmen.Handler.MyAuthenticationFailureHandler;
 import org.netmen.dao.vo.LoginUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
