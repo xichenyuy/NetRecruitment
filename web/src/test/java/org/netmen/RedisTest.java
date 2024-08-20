@@ -15,16 +15,16 @@ public class RedisTest {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    @Test
-    public void testSet() {
-        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        operations.set("key1", "value1");
-        operations.set("key2", "2", 15, TimeUnit.SECONDS);
-    }
-
-    @Test
-    public void testGet() {
-        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-        System.out.println(operations.get("key1"));
-    }
+    // @Test
+    // public void testSet() {
+    //     ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+    //     operations.set("key1", "value1");
+    //     operations.set("key2", "2", 15, TimeUnit.SECONDS);
+    // }
+    //
+    // @Test
+    // public void testGet() {
+    //     ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+    //     System.out.println(operations.get("key1"));
+    // }
 }

@@ -38,7 +38,7 @@ public class RoleController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('role:update')")
-    public Result<Object> update(Integer id, @RequestBody RoleDTO roleDTO) {
+    public Result<Object> update(@PathVariable Integer id, @RequestBody RoleDTO roleDTO) {
         Role role = roleService.getById(id);
         if(role == null){
             return Result.error().message("ID不存在");
@@ -50,7 +50,7 @@ public class RoleController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('role:delete')")
-    public Result<Object> delete(Integer id) {
+    public Result<Object> delete(@PathVariable Integer id) {
         Role byId = roleService.getById(id);
         if(byId == null){
             return Result.error().message("ID不存在");
