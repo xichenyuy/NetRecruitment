@@ -13,11 +13,11 @@ public class JwtTest {
         System.out.println(jwt);
     }
 
-    // @Test
-    // public void parseJwt() throws Exception {
-    //     Claims claims = JwtUtil.parseJwt("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI0NGFjZTY3ZDJmZjA0NzAzODYyYzk2YThiOGVlNDJhYiIsInN1YiI6IjEwMDg2IiwiaXNzIjoibmV0bWVuIiwiaWF0IjoxNzIzNjAyNjczLCJleHAiOjE3MjM2MDYyNzN9.MLM7VQmKEKi4ZdSbpB7kAuZgmeZW79hHsDYxl0Nk0wg");
-    //     System.out.println(claims);
-    //     System.out.println(claims.getId());
-    // }
+    @Test
+    public void parseJwt() throws Exception {
+        Claims claims = JwtUtil.parseJwt("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIyMmI4NjU2M2NkNTI0YjBlOTQyMWY4MzNlZDAyMDY0ZCIsInN1YiI6IjEwMDg2IiwiaXNzIjoibmV0bWVuIiwiaWF0IjoxNzIzMDE3MTMwLCJleHAiOjE3MjMwMjA3MzB9.M5JLJMX3UX-U64C6w9lbxg-Q-jmeTwY7Y88zVFnUYr8");
+        System.out.println(claims);
+        System.out.println(claims.getId());
+    }
 }
 
