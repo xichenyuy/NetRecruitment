@@ -47,7 +47,7 @@ public class StudentController {
 //        // 2.添加学生第一志愿信息
 //        boolean save1 = firstService.save(first);
 
-        return Result.success().message("添加成功");
+        return Result.success().message("添加成功").data(student.getId());
     }
 
     /**

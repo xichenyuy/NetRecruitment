@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.ibatis.annotations.Param;
-import org.netmen.common.response.Result;
+import org.netmen.common.result.Result;
 import org.netmen.dao.mapper.CollegeMapper;
 import org.netmen.dao.mapper.UserMapper;
 import org.netmen.dao.po.College;
@@ -41,7 +41,7 @@ public class CollegeServeImpl extends ServiceImpl<CollegeMapper, College> implem
     @Override
     public Result deleteCollege(List<Integer> ids) {
         if (ids==null||ids.size()==0){
-            return Result.error("未传入待删除的学院");
+            return Result.success().message("未传入待删除的学院");
         }
         //建立起一个organization在数据库中的查询器
         LambdaQueryWrapper<College> wrapper = new LambdaQueryWrapper<>();
@@ -50,16 +50,16 @@ public class CollegeServeImpl extends ServiceImpl<CollegeMapper, College> implem
         //查看删除状态
         int i = collegeMapper.delete(wrapper);
         if(i==0){
-            return Result.error("删除失败");
+            return Result.error().message("删除失败");
         }
-        return Result.success("删除成功！");
+        return Result.success().message("删除成功！");
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class) // 确保事务性
     public Result changeCollegeName(Integer collegeId, String newName) {
         if (newName == null || newName.trim().isEmpty()) {
-            return Result.error("学院名称不能为空");
+            return Result.error().message("学院名称不能为空");
         }
 
         //建立查询器
@@ -78,10 +78,10 @@ public class CollegeServeImpl extends ServiceImpl<CollegeMapper, College> implem
             if(updateResult==1){
                 return Result.success();
             }else{
-                return Result.error("修改失败");
+                return Result.error().message("修改失败");
             }
         }
-        return Result.error("没有找到该学院");
+        return Result.error().message("没有找到该学院");
     }
 
     @Override
@@ -91,7 +91,7 @@ public class CollegeServeImpl extends ServiceImpl<CollegeMapper, College> implem
         //根据分页器拿到数据
         IPage<College> collegeIPage = collegeMapper.selectAllCollege(page);
         if(collegeIPage==null){
-            return Result.error("数据库中暂无数据");
+            return Result.error().message("数据库中暂无数据");
         }
         //处理从数据库查询得到的数据，并将其转换成一个列表形式的Java集合
         List<Map<String,Object>> collect = (List<Map<String, Object>>) collegeIPage.getRecords().stream().map(college -> {
@@ -101,7 +101,7 @@ public class CollegeServeImpl extends ServiceImpl<CollegeMapper, College> implem
                 throw new RuntimeException(e);
             }
         }).toList();
-        return Result.success(collect);
+        return Result.success().data(collect);
     }
     //用来把从数据库拿出来的数据转换成map的函数
     private Map<String,Object> convertcollegeToMap(College college) throws ParseException {

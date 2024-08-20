@@ -17,4 +17,5 @@ public interface DepartmentService extends IService<Department> {
 
     void updateById(Integer departmentId, String name, Integer organizationId);
 
+    Department findMajorByName(String name);
 }

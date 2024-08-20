@@ -7,7 +7,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.netmen.common.result.Result;
 import org.netmen.dao.po.Department;
+import org.netmen.dao.po.Major;
+import org.netmen.dto.DepartmentDTO;
 import org.netmen.service.DepartmentService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +27,24 @@ public class DepartmentController {
 
     //新增部门数据
     @PostMapping("/add")
-    @Operation(summary = "添加部门", description = "输入部门信息")
-    public Result<Department> departmentAdd(@Valid @RequestBody String name, @Valid @RequestBody Integer organizationId) {
-        departmentService.departmentAdd(name, organizationId);
-        return Result.success();
+    @Operation(summary = "增加部门",description = "要传入部门的名称，部门的id和组织id")
+    public Result add(String name, Integer organizationId){
+        Department department = departmentService.findMajorByName(name);
+        //先检测一下是不是已经有这个专业了
+        if(department==null){
+            DepartmentDTO departmentDTO = new DepartmentDTO();
+            Department newDepartment = new Department();
+            departmentDTO.setName(name);
+            departmentDTO.setOrganizationId(organizationId);
+            BeanUtils.copyProperties(departmentDTO,newDepartment);
+            boolean sus = departmentService.save(newDepartment);
+            if(sus){
+                return Result.success();
+            }else{
+                return Result.error().message("添加失败！");
+            }
+        }
+        return Result.error().message("此部门已存在");
     }
 
 

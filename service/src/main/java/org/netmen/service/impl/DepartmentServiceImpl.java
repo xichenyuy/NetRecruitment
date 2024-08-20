@@ -1,9 +1,11 @@
 package org.netmen.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.netmen.dao.mapper.DepartmentMapper;
 import org.netmen.dao.po.Department;
+import org.netmen.dao.po.Major;
 import org.netmen.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,12 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         departmentMapper.update(department, queryWrapper);
     }
 
+    @Override
+    public Department findMajorByName(String name) {
+        LambdaQueryWrapper<Department> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Department::getName,name);
+        return departmentMapper.selectOne(wrapper);
+    }
 
 
 }
