@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # 端口号
-      Port: 8081
+      Port: 8080
       # 云服务地址
       Host_IP: ${{secrets.REMOTE_SERVER01_IP}}
       # 路径
