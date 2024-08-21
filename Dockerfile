@@ -23,4 +23,4 @@ RUN mvn clean package -DskipTests
 
 # 启动服务
 #   -- 指定 application-prod.yml 启动
-CMD ["java","-jar","web/target/web-1.0.0.jar.original","--spring.profiles.active=prod"]
+CMD ["java","-jar","web/target/web-1.0.0.jar","--spring.profiles.active=prod"]
