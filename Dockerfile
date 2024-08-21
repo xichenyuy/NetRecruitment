@@ -19,7 +19,7 @@ COPY api/src ./api/src
 # 方案一：用本地打的包
 # COPY target ./target
 # 方案二：容器内打包,并跳过测试用例
-RUN mvn clear package -DskipTests
+RUN mvn clean package -DskipTests
 
 # 启动服务
 #   -- 指定 application-prod.yml 启动
