@@ -9,6 +9,8 @@ on:
   pull_request:
     branches:
       - "main"
+  # work flow 的页面下的 Run workflow 触发按钮
+  workflow_dispatch:
 
 # 工作流具体执行的任务
 jobs:
