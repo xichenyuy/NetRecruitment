@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.netmen.common.result.Result;
-import org.netmen.dao.mapper.MajorMapper;
 import org.netmen.dao.po.Major;
-import org.netmen.service.MajorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

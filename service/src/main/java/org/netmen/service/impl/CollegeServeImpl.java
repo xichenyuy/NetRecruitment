@@ -5,13 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.ibatis.annotations.Param;
 import org.netmen.common.result.Result;
-import org.netmen.dao.mapper.CollegeMapper;
-import org.netmen.dao.mapper.UserMapper;
 import org.netmen.dao.po.College;
-import org.netmen.dao.po.User;
-import org.netmen.service.CollegeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +15,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class CollegeServeImpl extends ServiceImpl<CollegeMapper, College> implements CollegeService{
