@@ -1,3 +1,4 @@
+
 .idea/
 
 common/target/
@@ -7,3 +8,29 @@ dao/target/
 service/target/
 
 web/target/
+######################################################################
+# Build Tools
+
+.gradle
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+######################################################################
+# IDE
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+######################################################################
+# Others
+
+*.log
+*.xml.versionsBackup
+*.swp
+

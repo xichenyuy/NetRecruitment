@@ -21,11 +21,11 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("user")
-public class User {
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+public class User extends BaseEntity{
+    @Pattern(regexp = "^\\S{5,16}$")
     private String username;
     @JSONField(serialize = false) //让springmvc将当前对象转换成json时, 忽略password, 防止user信息连同密码一起返回
+    @Pattern(regexp = "^\\S{5,16}$")
     private String password;
     @NotEmpty
     @Pattern(regexp = "^\\S{1,16}$")
@@ -36,9 +36,4 @@ public class User {
     private String userPic;
     private Boolean superuser;
     private Boolean disabled;
-    private Boolean deleted;
-    private String createBy;
-    private LocalDateTime createTime;
-    private String updateBy;
-    private LocalDateTime updateTime;
 }

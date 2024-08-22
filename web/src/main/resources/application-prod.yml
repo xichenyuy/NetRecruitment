@@ -1,0 +1,54 @@
+#前端专用环境
+server:
+  port: 8080
+
+spring:
+  datasource:
+    #数据库驱动完整类名
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #数据库连接url
+    url: jdbc:mysql://110.41.141.140:3306/test5?characterEncoding=utf-8
+    #数据库用户名
+    username: root
+    #数据库密码
+    password: 123456
+    druid:
+      #初始化时连接池中创建的数据库连接数量
+      initial-size: 20
+      #连接池中允许的最小空闲连接数
+      min-idle: 20
+      #连接池中允许的最大活动连接数 推荐设置为CPU核数+1 不要超过20
+      max-active: 20
+      #获取连接时最大等待时间 单位毫秒
+      max-wait: 10000
+      #检测空闲连接的时间间隔
+      time-between-eviction-runs-millis: 60000
+      #连接在连接池中保持空闲而不被驱逐的最小时间
+      min-evictable-idle-time-millis: 30000
+      #用于验证从连接池获取的数据库连接是否仍然有效的SQL语句
+      validation-query: SELECT 1 FROM DUAL
+      #在连接空闲时，是否执行validation-query来检查连接的有效性
+      test-while-idle: true
+      #设置从连接池获取连接时是否检查连接有效性，true检查，false不检查
+      test-on-borrow: true
+      #设置从连接池归还连接时是否检查连接有效性，true检查，false不检查
+      test-on-return: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      jedis:
+        pool:
+          max-active: 8
+          #最大阻塞等待时间 负数为不限制
+          max-wait: -1ms
+          #最大空间
+          max-idle: 8
+          #最小空间
+          min-idle: 0
+      #连接超时时间
+      timeout: 10000
+  #json配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
