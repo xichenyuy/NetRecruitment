@@ -1,3 +1,13 @@
+
+.idea/
+
+common/target/
+
+dao/target/
+
+service/target/
+
+web/target/
 ######################################################################
 # Build Tools
 
@@ -23,3 +33,4 @@ target/
 *.log
 *.xml.versionsBackup
 *.swp
+
