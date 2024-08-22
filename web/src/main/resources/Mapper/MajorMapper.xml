@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--        在XML映射中以声明式的方式构建复杂的SQL语句。-->
+<mapper namespace="org.netmen.dao.mapper.MajorMapper">
+
+    <select id="selectMapsPage" resultType="org.netmen.dao.po.Major" parameterType="map">
+        select *  from major
+        <!--    从表中选取要传给前端的字段    -->
+        where
+        <!--    选定一个学院的所有专业-->
+        college_id = #{collegeId}
+        order by major_id ASC
+    </select>
+
+</mapper>
