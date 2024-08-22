@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--        在XML映射中以声明式的方式构建复杂的SQL语句。-->
+<mapper namespace="org.netmen.dao.mapper.CollegeMapper">
+
+    <select id="selectAllCollege" resultType="org.netmen.dao.po.College" parameterType="map">
+        select college_id,name  from college
+        <!--    从表中选取要传给前端的字段    -->
+        where 1=1
+        order by college_id ASC
+    </select>
+
+</mapper>
