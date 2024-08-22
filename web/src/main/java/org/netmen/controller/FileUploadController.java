@@ -1,8 +1,7 @@
 package org.netmen.controller;
 
-import org.netmen.common.response.Result;
+import org.netmen.common.result.Result;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,14 +14,14 @@ import java.util.UUID;
 @RestController
 public class FileUploadController {
     @PostMapping("/upload")
-    public Result<String> upload(MultipartFile file) throws IOException {
+    public Result<Object> upload(MultipartFile file) throws IOException {
         //把文件存储到本地磁盘
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         String originalFilename = file.getOriginalFilename();
         //设置文件名为 当前时间+uuid
         String fileName = sdf.format(new Date()) + UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
         file.transferTo(new File("C:\\NetRecruitmentFile\\" + fileName));
-        return Result.success("C:\\NetRecruitmentFile\\" + fileName);
+        return Result.success().message("C:\\NetRecruitmentFile\\" + fileName);
 
 
     }

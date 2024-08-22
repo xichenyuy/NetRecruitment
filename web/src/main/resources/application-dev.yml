@@ -1,6 +1,6 @@
 #开发环境
 server:
-  port: 8081
+  port: 8080
 
 spring:
   datasource:
@@ -11,10 +11,4 @@ spring:
     #数据库用户名
     username: root
     #数据库密码
-    password:
 
-email:
-  user: 1211903563@qq.com
-  code:
-  host: smtp.qq.com
-  auth: true
