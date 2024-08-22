@@ -3,7 +3,7 @@ package org.netmen.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.netmen.common.response.Result;
+import org.netmen.common.result.Result;
 import org.netmen.dao.po.College;
 import org.netmen.service.CollegeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class CollegeController {
             collegeService.save(newOne);
             return Result.success();
         }
-        return Result.error("该学院已存在");
+        return Result.error().message("该学院已存在");
     }
 
     //批量删除组织
