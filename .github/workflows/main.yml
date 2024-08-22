@@ -62,11 +62,11 @@ jobs:
 
       # 拉取最新代码
       - name: Pull latest code
-        uses: actions/checkout@v3       # 使用官方的checkout action，用于将仓库中的最新代码检查并拉取到工作目录中
+        uses: actions/checkout@v4       # 使用官方的checkout action，用于将仓库中的最新代码检查并拉取到工作目录中
 
       # 设置JDK版本
       - name: Set up JDK 17
-        uses: actions/setup-java@v3     # 安装java环境的action
+        uses: actions/setup-java@v4     # 安装java环境的action
         with:
           java-version: '17.0'           # 指定jkd版本
           distribution: 'temurin'
