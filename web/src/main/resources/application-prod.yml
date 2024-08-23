@@ -7,7 +7,7 @@ spring:
     #数据库驱动完整类名
     driver-class-name: com.mysql.cj.jdbc.Driver
     #数据库连接url 填写docker中的容器名
-    url: jdbc:mysql://mysql8:3306/test5?characterEncoding=utf-8
+    url: jdbc:mysql://110.41.141.140:3306/test5?characterEncoding=utf-8
     #数据库用户名
     username: root
     #数据库密码
