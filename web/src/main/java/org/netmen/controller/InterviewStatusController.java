@@ -7,10 +7,7 @@ import org.netmen.common.result.Result;
 import org.netmen.dao.po.InterviewStatus;
 import org.netmen.service.InterviewStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -21,8 +18,6 @@ public class InterviewStatusController {
 
     @Autowired
     private InterviewStatusService interviewStatusService;
-    @Autowired
-    private DefaultAuthenticationEventPublisher authenticationEventPublisher;
 
     /**
      * 根据id查看面试状态
@@ -33,7 +28,7 @@ public class InterviewStatusController {
         try {
             InterviewStatus interviewStatus = interviewStatusService.getById(id);
             return Result.success().data(interviewStatus);
-        }catch (Exception e) {
+        } catch (Exception e) {
             return Result.error().message("查询失败");
         }
 
@@ -48,7 +43,7 @@ public class InterviewStatusController {
         try {
             interviewStatusService.interviewFailed(id);
             return Result.success().message("淘汰成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.error().message("淘汰失败");
         }
 
@@ -63,7 +58,7 @@ public class InterviewStatusController {
         try {
             interviewStatusService.interviewPass(id);
             return Result.success().message("通过成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.error().message("通过失败");
         }
 
@@ -74,12 +69,12 @@ public class InterviewStatusController {
      */
     @PutMapping("/adjustDepartment")
     @Operation(summary = "部门调剂挑选接口", description = "传入部门id和学生id，调剂学生到该部门")
-    public  Result adjustDepartmentSelect(@RequestParam Integer departmentId,
-                                    @RequestParam Integer studentId) {
+    public Result adjustDepartmentSelect(@RequestParam Integer departmentId,
+                                         @RequestParam Integer studentId) {
         try {
             interviewStatusService.adjustDepartmentSelect(departmentId, studentId);
             return Result.success().message("调剂成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.error().message("调剂失败");
         }
 
@@ -94,7 +89,7 @@ public class InterviewStatusController {
         try {
             interviewStatusService.falseTouchRejection(id);
             return Result.success().message("执行成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.error().message("执行失败");
         }
 
@@ -102,6 +97,7 @@ public class InterviewStatusController {
 
     /**
      * 初始化面试状态接口
+     *
      * @param id
      * @return
      */
@@ -111,7 +107,7 @@ public class InterviewStatusController {
         try {
             interviewStatusService.initialize(id);
             return Result.success().message("重置成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             return Result.error().message("重置失败");
         }
 

@@ -33,14 +33,15 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
     @Override
     public void interviewFailed(Integer id) {
         InterviewStatus interviewStatus = getById(id);
+        Boolean adjust = interviewStatus.getAdjust();
         // 1.如果当前处于第一志愿部门面试
         if (interviewStatus.getCurDepartmentId().equals(interviewStatus.getFirstDepartmentId())) {
             // 第一志愿部门和第二志愿部门相同时
             if (interviewStatus.getFirstDepartmentId().equals(interviewStatus.getSecondDepartmentId())) {
                 // 是否调剂意愿为否
-                if (interviewStatus.getAdjust().equals(false)) {
+                if (adjust.equals(false)) {
                     // 淘汰
-                    interviewStatus.setStatus(Short.valueOf((short) 2));
+                    interviewStatus.setStatus(((short) 2));
                     interviewStatusMapper.updateById(interviewStatus);
                     return;
                 } else {
@@ -58,9 +59,9 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
         // 2.当前处于第二志愿部门面试
         if (interviewStatus.getCurDepartmentId().equals(interviewStatus.getSecondDepartmentId())) {
             // 是否调剂意愿为否
-            if (interviewStatus.getAdjust().equals(false)) {
+            if (adjust.equals(false)) {
                 // 淘汰
-                interviewStatus.setStatus(Short.valueOf((short) 2));
+                interviewStatus.setStatus(((short) 2));
                 interviewStatusMapper.updateById(interviewStatus);
                 return;
             } else {
@@ -83,7 +84,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
     @Override
     public void interviewPass(Integer id) {
         InterviewStatus interviewStatus = getById(id);
-        interviewStatus.setStatus(Short.valueOf((short) 1));
+        interviewStatus.setStatus(((short) 1));
         interviewStatusMapper.updateById(interviewStatus);
     }
 
@@ -106,7 +107,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
     public void falseTouchRejection(Integer id) {
         InterviewStatus interviewStatus = getById(id);
         // 如果当前为待面试状态
-        if (interviewStatus.getStatus().equals(false)) {
+        if (interviewStatus.getStatus().equals((short)0)) {
             // 1.如果当前处于第二志愿部门面试
             if (interviewStatus.getCurDepartmentId().equals(interviewStatus.getSecondDepartmentId())) {
                 // 回退到第一志愿部门
@@ -117,13 +118,13 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                 interviewStatus.setCurDepartmentId(interviewStatus.getSecondDepartmentId());
                 interviewStatusMapper.updateById(interviewStatus);
             }
-        } else if (interviewStatus.getStatus().equals(Short.valueOf((short) 1))) {
+        } else if (interviewStatus.getStatus().equals(((short) 1))) {
             // 当前为录取状态,则回退为待面试状态
-            interviewStatus.setStatus(Short.valueOf((short) 0));
+            interviewStatus.setStatus(((short) 0));
             interviewStatusMapper.updateById(interviewStatus);
         } else {
             // 当前为淘汰状态,则回退为待面试状态
-            interviewStatus.setStatus(Short.valueOf((short) 0));
+            interviewStatus.setStatus(((short) 0));
             interviewStatusMapper.updateById(interviewStatus);
         }
     }
@@ -136,7 +137,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
     @Override
     public void initialize(Integer id) {
         InterviewStatus interviewStatus = getById(id);
-        interviewStatus.setStatus(Short.valueOf((short) 0));
+        interviewStatus.setStatus(((short) 0));
         interviewStatus.setCurDepartmentId(interviewStatus.getFirstDepartmentId());
         interviewStatusMapper.updateById(interviewStatus);
     }
