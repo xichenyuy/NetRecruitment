@@ -8,7 +8,6 @@ import org.netmen.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements DepartmentService {
@@ -16,39 +15,34 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     @Autowired
     private DepartmentMapper departmentMapper;
 
-
     @Override
     public void departmentAdd(String name, Integer organizationId){
         Department department = new Department();
         department.setName(name);
         department.setOrganizationId(organizationId);
+        department.setDeleted(false);
         departmentMapper.insert(department);
     }
 
 
     @Override
-    public void deleteById(Integer departmentId) {
+    public void departmentDeleteById(Integer departmentId) {
         departmentMapper.deleteById(departmentId);
     }
 
-    public List<Department> findAll() {
-        return departmentMapper.findAll();
-    }
-
-
     @Override
-    public void updateById(Integer departmentId, String name, Integer organizationId) {
-        // 创建更新条件
-        QueryWrapper<Department> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("department_id", departmentId);
-        // 创建更新对象
+    public void updateById(Integer id, String name, Integer organizationId) {
         Department department = new Department();
+        department.setId(id);
         department.setName(name);
         department.setOrganizationId(organizationId);
-        // 执行更新操作
-        departmentMapper.update(department, queryWrapper);
+        departmentMapper.updateById(department);
     }
 
-
-
+    @Override
+    public Department findName(String name) {
+        QueryWrapper<Department> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name", name);
+        return departmentMapper.selectOne(queryWrapper);
+    }
 }

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/department")
-@Validated
 @Tag(name = "department")
 public class DepartmentController {
 
@@ -25,20 +24,23 @@ public class DepartmentController {
     //新增部门数据
     @PostMapping("/add")
     @Operation(summary = "添加部门", description = "输入部门信息")
-    public Result<Department> departmentAdd(@Valid @RequestBody String name, @Valid @RequestBody Integer organizationId) {
-        departmentService.departmentAdd(name, organizationId);
-        return Result.success();
+    public Result<Object> departmentAdd(@RequestBody String name, @RequestBody Integer organizationId) {
+        //首先判断是否已经存在该部门信息
+        Department department = departmentService.findName(name);
+        if(department==null)
+        {
+            departmentService.departmentAdd(name, organizationId);
+            return Result.success();
+        }
+        else{
+            return Result.error().message("该部门已经存在！");
+        }
+
     }
 
-
-//    @GetMapping("/check")
-//    @Operation(summary = "查询所有部门", description = "一次性查询所有部门")
-//    public List<Department> getAllUsers() {
-//        return departmentService.findAll();
-//    }
-
+    //查询部门
     @GetMapping("/check")
-    @Operation(summary = "查询所有部门", description = "一次性查询所有部门")
+    @Operation(summary = "查询部门", description = "输入数据查询部门")
     public Result<Object> list(Integer pageNum, Integer pageSize) {
         Page<Department> page = new Page<>(pageNum, pageSize);
         Page<Department> rolePage = departmentService.page(page);
@@ -46,19 +48,19 @@ public class DepartmentController {
     }
 
 
-
-    @RequestMapping(value = "/delete", method = RequestMethod.PUT)
+    //删除部门
+    @DeleteMapping("/delete")
     @Operation(summary = "删除部门", description = "根据id信息删除部门信息")
-    public Result<Department> deleteById(@PathVariable @RequestParam Integer departmentId) {
-        departmentService.deleteById(departmentId);
+    public Result<Department> departmentDeleteById(@RequestParam Integer departmentId) {
+        departmentService.departmentDeleteById(departmentId);
         return Result.success();
     }
 
 
-
+    //修改部门
     @PutMapping("/update")
     @Operation(summary = "修改部门", description = "输入部门信息")
-    public Result<Department> updateDepartment(@PathVariable @RequestParam Integer departmentId, @RequestParam String name, @RequestParam Integer organizationId) {
+    public Result<Department> updateDepartment(@RequestBody Integer departmentId, @RequestBody String name, @RequestBody Integer organizationId) {
         departmentService.updateById(departmentId, name, organizationId);
         return Result.success();
     }
