@@ -4,15 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.netmen.dao.mapper.FirstMapper;
-import org.netmen.dao.mapper.SecondMapper;
+import org.netmen.dao.mapper.InterviewStatusMapper;
 import org.netmen.dao.mapper.StudentMapper;
-import org.netmen.dao.po.First;
-import org.netmen.dao.po.Second;
+import org.netmen.dao.po.InterviewStatus;
 import org.netmen.dao.po.Student;
 import org.netmen.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,10 +24,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     private StudentMapper studentMapper;
 
     @Autowired
-    private FirstMapper firstMapper;
-
-    @Autowired
-    private SecondMapper secondMapper;
+    private InterviewStatusMapper interviewStatusMapper;
 
 
     /**
@@ -51,83 +45,43 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     }
 
     /**
-     * 新增学生，并添加第一第二志愿信息
+     * 新增学生，并添加志愿信息
      *
      * @param student
+     * @param interviewStatus
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void saveStudent(Student student) {
+    public void saveStudent(Student student, InterviewStatus interviewStatus) {
         // 1. 添加student
         studentMapper.insert(student);
-        First first = new First();
-        Second second = new Second();
-        first.setFirstId(student.getId());
-        first.setDepartmentId(student.getFirstId());
-        second.setSecondId(student.getId());
-        second.setDepartmentId(student.getSecondId());
-        // 2.添加first
-        firstMapper.insert(first);
-        // 3.添加second
-        secondMapper.insert(second);
+        interviewStatus.setId(student.getId());
+        interviewStatus.setCurDepartmentId(interviewStatus.getFirstDepartmentId());
+        // 2. 添加interviewStatus
+        interviewStatusMapper.insert(interviewStatus);
     }
 
     /**
-     * 删除学生，并删除第一第二志愿信息
-     *
+     * 物理删除
      * @param ids
      */
-    @Transactional(rollbackFor = Exception.class)
     @Override
-    public void deleteByIds(List<Integer> ids) {
-        firstMapper.deleteBatchIds(ids);
-        secondMapper.deleteBatchIds(ids);
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteStudentByIds(List<Integer> ids) {
         studentMapper.deleteBatchIds(ids);
+        interviewStatusMapper.deleteBatchIds(ids);
     }
 
+
+
     /**
-     * 修改学生信息，并第一第二志愿是否更改，如果更改，自动更改
-     *
-     * @param student
+     * 根据学号查询
+     * @param studentId
+     * @return
      */
-    @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateStudent(Student student) {
-        // 获得修改前的学生记录
-        Student updateBefore = studentMapper.selectById(student.getId());
-        // 第一志愿修改了
-        First first = new First();
-        Second second = new Second();
-        if (student.getFirstId() != null) {
-//            log.info("更改之前的firstId：{}", updateBefore.getFirstId());
-            if (updateBefore.getFirstId() == null || !updateBefore.getFirstId().equals(student.getFirstId())) {
-                first.setDepartmentId(student.getFirstId());
-                first.setFirstId(student.getId());
-                firstMapper.updateById(first);
-            }
-        } else {
-            log.info("student表的firstId：{}", student.getFirstId());
-            first.setDepartmentId(null);
-            log.info("first表的firstId：{}", first.getFirstId());
-            first.setFirstId(student.getId());
-            firstMapper.updateById(first);
-        }
+    public Student getByStudentId(String studentId) {
+        return studentMapper.getByStudentId(studentId);
 
-        // 第二志愿修改了
-
-        if (student.getSecondId() != null) {// 是否为空值
-            if (updateBefore.getSecondId() == null || !updateBefore.getSecondId().equals(student.getSecondId())) { // 是否修改
-                second.setDepartmentId(student.getSecondId());
-                second.setSecondId(student.getId());
-                secondMapper.updateById(second);
-            }
-        } else {
-            second.setDepartmentId(null);
-            second.setSecondId(student.getId());
-            secondMapper.updateById(second);
-        }
-
-        // 修改学生信息
-        studentMapper.updateById(student);
     }
 }

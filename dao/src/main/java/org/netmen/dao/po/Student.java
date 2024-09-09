@@ -12,27 +12,25 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student{
+public class Student extends BaseEntity{
 
-    @TableId(value = "student_id", type = IdType.AUTO)
+    @TableId(type = IdType.AUTO)
     private Integer id;
+    // 学号
+    private String studentId;
     private String name;
+    private Short sex;
     private String grade;
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private Long majorId;
     @TableField(value = "class")
     private Short classId;
-    private String area;
-    private String door;
-    private String storey;
-    private String email;
-    private Short sex;
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    private Integer majorId;
     private Short political;
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private Integer firstId;
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private Integer secondId;
-    private Short adjust;
+    private String area;
+    private String building;
+    private String floor;
+    private String room;
+    private String email;
     private String photo;
     private String introduce;
     private String hobbies;

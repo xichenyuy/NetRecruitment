@@ -1,6 +1,7 @@
 package org.netmen.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.netmen.dao.po.InterviewStatus;
 import org.netmen.dao.po.Student;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,12 @@ public interface StudentService extends IService<Student> {
     List<Student> findStudentsByName(String name, Integer pageNo, Integer pageSize);
 
 
-    void saveStudent(Student student);
+    void saveStudent(Student student, InterviewStatus interviewStatus);
 
-    void deleteByIds(List<Integer> ids);
 
-    void updateStudent(Student student);
+    void deleteStudentByIds(List<Integer> ids);
+
+
+    Student getByStudentId(String studentId);
+
 }
