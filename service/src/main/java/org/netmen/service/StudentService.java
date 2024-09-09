@@ -26,7 +26,7 @@ public interface StudentService extends IService<Student> {
 
     void deleteStudentByIds(List<Integer> ids);
 
-    void updateDeleted(Integer id);
 
     Student getByStudentId(String studentId);
+
 }

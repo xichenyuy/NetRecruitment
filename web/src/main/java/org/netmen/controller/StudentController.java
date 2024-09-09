@@ -64,7 +64,7 @@ public class StudentController {
      * @return
      */
     @DeleteMapping("/{ids}")
-    @Operation(summary = "物理删除接口", description = "在数据库中彻底删除")
+    @Operation(summary = "逻辑删除接口", description = "修改deleted字段为1")
     public Result deleteStudent(@PathVariable("ids") List<Integer> ids) {
         try {
             studentService.deleteStudentByIds(ids);
@@ -75,18 +75,6 @@ public class StudentController {
 
     }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "逻辑删除接口", description = "修改属性deleted")
-    public Result updateDeleted(@PathVariable("id") Integer id){
-        try {
-            studentService.updateDeleted(id);
-            interviewStatusService.updateDeleted(id);
-            return Result.success().message("删除成功");
-        }catch (Exception e){
-            return Result.error().message("删除失败");
-        }
-
-    }
 
     /**
      * 根据学生id修改学生信息
@@ -97,6 +85,12 @@ public class StudentController {
     @Operation(summary = "修改学生接口", description = "修改学生个人信息")
     public Result updateStudent(@RequestBody StudentDTOId studentDTOId) {
         try {
+            if(studentService.getById(studentDTOId.getId()) == null){
+                return Result.error().message("该学生不存在，请检查id是否有误或联系管理员");
+            }
+            if (studentService.getByStudentId(studentDTOId.getStudentId()) != null){
+                return Result.error().message("该学生已存在，请检查学号是否有误或联系管理员");
+            }
             Student student = new Student();
             InterviewStatus interviewStatus = new InterviewStatus();
             BeanUtils.copyProperties(studentDTOId, student);

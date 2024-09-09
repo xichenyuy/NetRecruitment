@@ -7,13 +7,12 @@ import org.springframework.stereotype.Service;
 @Service
 public interface InterviewStatusService extends IService<InterviewStatus> {
 
-    void updateDeleted(Integer id);
 
     void interviewFailed(Integer id);
 
     void interviewPass(Integer id);
 
-    void adjustDepartmentSelect(Integer departmentId, Integer studentId);
+    void adjustDepartmentSelect(Integer departmentId, Integer id);
 
     void falseTouchRejection(Integer id);
 

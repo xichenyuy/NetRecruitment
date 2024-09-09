@@ -8,6 +8,8 @@ import org.netmen.dao.po.Student;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Mapper
 public interface StudentMapper extends BaseMapper<Student> {
     @Update("update test1.student set deleted = 1 where id = #{id}")
