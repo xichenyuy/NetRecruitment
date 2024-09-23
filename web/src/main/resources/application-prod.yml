@@ -38,6 +38,7 @@ spring:
       #填写docker中的容器名
       host: redis7
       port: 6379
+      password: 123456
       jedis:
         pool:
           max-active: 8
