@@ -68,7 +68,7 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4     # 安装java环境的action
         with:
-          java-version: '17.0'           # 指定jkd版本
+          java-version: '17'           # 指定jkd版本
           distribution: 'temurin'
           cache: maven                  # 使用maven缓存，避免每次构建项目时都要重新下载maven依赖
 

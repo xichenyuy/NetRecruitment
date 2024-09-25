@@ -70,9 +70,9 @@ public class InterviewStatusController {
     @PutMapping("/adjustDepartment")
     @Operation(summary = "部门调剂挑选接口", description = "传入部门id和学生id，调剂学生到该部门")
     public Result adjustDepartmentSelect(@RequestParam Integer departmentId,
-                                         @RequestParam Integer studentId) {
+                                         @RequestParam Integer id) {
         try {
-            interviewStatusService.adjustDepartmentSelect(departmentId, studentId);
+            interviewStatusService.adjustDepartmentSelect(departmentId, id);
             return Result.success().message("调剂成功");
         } catch (Exception e) {
             return Result.error().message("调剂失败");

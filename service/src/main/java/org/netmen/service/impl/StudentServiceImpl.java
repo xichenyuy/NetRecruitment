@@ -72,14 +72,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         interviewStatusMapper.deleteBatchIds(ids);
     }
 
-    /**
-     * 逻辑删除
-     * @param id
-     */
-    @Override
-    public void updateDeleted(Integer id) {
-        studentMapper.updateDeleted(id);
-    }
+
 
     /**
      * 根据学号查询
@@ -91,5 +84,4 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         return studentMapper.getByStudentId(studentId);
 
     }
-
 }
