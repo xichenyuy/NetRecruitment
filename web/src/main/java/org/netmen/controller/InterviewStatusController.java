@@ -85,7 +85,7 @@ public class InterviewStatusController {
      */
     @PutMapping("/falseTouchRejection/{id}")
     @Operation(summary = "防误触接口（有权限）", description = "修改面试状态为未通过并回退上一级")
-    public Result falseTouchRejection(@PathVariable("id") Integer id) {
+            public Result falseTouchRejection(@PathVariable("id") Integer id) {
         try {
             interviewStatusService.falseTouchRejection(id);
             return Result.success().message("执行成功");
