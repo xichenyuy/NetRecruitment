@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: test5
+    active: test1
     #test5为前端环境 服务器上配置时请使用test5打包
 
 
