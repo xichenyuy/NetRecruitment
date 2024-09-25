@@ -88,17 +88,12 @@ public class StudentController {
             if(studentService.getById(studentDTOId.getId()) == null){
                 return Result.error().message("该学生不存在，请检查id是否有误或联系管理员");
             }
-            if (studentService.getByStudentId(studentDTOId.getStudentId()) != null){
-                return Result.error().message("该学生已存在，请检查学号是否有误或联系管理员");
-            }
             Student student = new Student();
             InterviewStatus interviewStatus = new InterviewStatus();
             BeanUtils.copyProperties(studentDTOId, student);
             BeanUtils.copyProperties(studentDTOId, interviewStatus);
             log.info("student表id：{}", student.getId());
-            studentService.updateById(student);
-            log.info("interviewStatus表id：{}", interviewStatus.getId());
-            interviewStatusService.updateById(interviewStatus);
+            studentService.updateStudentAndStatusAndRecordById(student,interviewStatus);
             return Result.success().message("修改成功");
         }catch (Exception e){
             return Result.error().message("修改失败");

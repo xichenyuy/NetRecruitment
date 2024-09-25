@@ -4,13 +4,17 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.netmen.dao.mapper.InterviewStatusMapper;
 import org.netmen.dao.po.InterviewStatus;
+import org.netmen.service.InterviewRecordService;
 import org.netmen.service.InterviewStatusService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMapper, InterviewStatus> implements InterviewStatusService {
 
+    @Autowired
+    private InterviewRecordService interviewRecordService;
 
     /**
      * 面试不通过
@@ -33,6 +37,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                             .eq(InterviewStatus::getId, id)
                             .eq(InterviewStatus::getStatus, interviewStatus.getStatus())
                             .update();
+                    interviewRecordService.interviewFailed(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
                     return;
                 } else {
                     lambdaUpdate()
@@ -40,15 +45,17 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                             .eq(InterviewStatus::getId, id)
                             .eq(InterviewStatus::getCurDepartmentId, interviewStatus.getCurDepartmentId())
                             .update();
+                    interviewRecordService.interviewFailed(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
                     return;
                 }
             } else {
-                // 不相同则进入第二志愿面试状态
+                // 不相同，等待第二志愿部门同意面试，也就是进入第二志愿部门第0面
                 lambdaUpdate()
                         .set(InterviewStatus::getCurDepartmentId, interviewStatus.getSecondDepartmentId())
                         .eq(InterviewStatus::getId, id)
                         .eq(InterviewStatus::getCurDepartmentId, interviewStatus.getCurDepartmentId())
                         .update();
+                interviewRecordService.interviewFailed(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
                 return;
             }
         }
@@ -62,6 +69,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                         .eq(InterviewStatus::getId, id)
                         .eq(InterviewStatus::getStatus, interviewStatus.getStatus())
                         .update();
+                interviewRecordService.interviewFailed(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
                 return;
             } else {
                 // 进入待调剂状态
@@ -70,6 +78,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                         .eq(InterviewStatus::getId, id)
                         .eq(InterviewStatus::getCurDepartmentId, interviewStatus.getCurDepartmentId())
                         .update();
+                interviewRecordService.interviewFailed(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
                 return;
             }
 
@@ -82,6 +91,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                     .eq(InterviewStatus::getId, id)
                     .eq(InterviewStatus::getCurDepartmentId, interviewStatus.getCurDepartmentId())
                     .update();
+            interviewRecordService.interviewFailed(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
             return;
         }
 
@@ -99,11 +109,16 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
     @Override
     public void interviewPass(Integer id) {
         InterviewStatus interviewStatus = getById(id);
-        lambdaUpdate()
-                .set(InterviewStatus::getStatus, ((short) 1))
-                .eq(InterviewStatus::getId, id)
-                .eq(InterviewStatus::getStatus, interviewStatus.getStatus())
-                .update();
+
+        // 最后一轮通过
+        if (interviewRecordService.interviewPass(id, interviewStatus.getCurDepartmentId()) == 1){
+            lambdaUpdate()
+                    .set(InterviewStatus::getStatus, ((short) 1))
+                    .eq(InterviewStatus::getId, id)
+                    .eq(InterviewStatus::getStatus, interviewStatus.getStatus())
+                    .update();
+        }
+
     }
 
     /**
@@ -117,6 +132,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                 .eq(InterviewStatus::getId, id)
                 .eq(InterviewStatus::getCurDepartmentId, interviewStatus.getCurDepartmentId())
                 .update();
+        interviewRecordService.adjustStudentInterviewRecord(id, departmentId);
     }
 
     /**
@@ -137,6 +153,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                         .eq(InterviewStatus::getId, id)
                         .eq(InterviewStatus::getCurDepartmentId, interviewStatus.getCurDepartmentId())
                         .update();
+                interviewRecordService.falseTouchRejection(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
             } else {
                 // 回退到第二志愿部门
                 lambdaUpdate()
@@ -144,6 +161,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                         .eq(InterviewStatus::getId, id)
                         .eq(InterviewStatus::getCurDepartmentId, interviewStatus.getCurDepartmentId())
                         .update();
+                interviewRecordService.falseTouchRejection(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
             }
         } else if (interviewStatus.getStatus().equals(((short) 1))) {
             // 当前为录取状态,则回退为待面试状态
@@ -152,6 +170,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                     .eq(InterviewStatus::getId, id)
                     .eq(InterviewStatus::getStatus, interviewStatus.getStatus())
                     .update();
+            interviewRecordService.falseTouchRejection(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
         } else {
             // 当前为淘汰状态,则回退为待面试状态
             lambdaUpdate()
@@ -159,6 +178,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                     .eq(InterviewStatus::getId, id)
                     .eq(InterviewStatus::getStatus, interviewStatus.getStatus())
                     .update();
+            interviewRecordService.falseTouchRejection(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
         }
     }
 
@@ -176,6 +196,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                 .eq(InterviewStatus::getId, id)
                 .eq(InterviewStatus::getStatus, interviewStatus.getStatus())
                 .update();
+        interviewRecordService.initialize(id);
     }
 
 

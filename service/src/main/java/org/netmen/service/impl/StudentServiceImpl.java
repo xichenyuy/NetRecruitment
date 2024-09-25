@@ -3,6 +3,7 @@ package org.netmen.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import lombok.extern.slf4j.Slf4j;
 import org.netmen.dao.mapper.InterviewStatusMapper;
 import org.netmen.dao.mapper.StudentMapper;
@@ -26,6 +27,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     @Autowired
     private InterviewStatusMapper interviewStatusMapper;
 
+    @Autowired
+    private InterviewRecordServiceImpl interviewRecordService;
 
     /**
      * 模糊查询
@@ -59,10 +62,13 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         interviewStatus.setCurDepartmentId(interviewStatus.getFirstDepartmentId());
         // 2. 添加interviewStatus
         interviewStatusMapper.insert(interviewStatus);
+        // 3. 新增record表记录
+        interviewRecordService.initStudentInterviewRecord(student.getId(),interviewStatus.getCurDepartmentId());
+
     }
 
     /**
-     * 物理删除
+     * 删除学生信息
      * @param ids
      */
     @Override
@@ -70,6 +76,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     public void deleteStudentByIds(List<Integer> ids) {
         studentMapper.deleteBatchIds(ids);
         interviewStatusMapper.deleteBatchIds(ids);
+
     }
 
 
@@ -82,6 +89,23 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     @Override
     public Student getByStudentId(String studentId) {
         return studentMapper.getByStudentId(studentId);
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateStudentAndStatusAndRecordById(Student student, InterviewStatus interviewStatus) {
+        updateById(student);
+        Db.lambdaUpdate(InterviewStatus.class)
+                .set(InterviewStatus::getCurDepartmentId,interviewStatus.getCurDepartmentId())
+                .set(InterviewStatus::getStatus,interviewStatus.getStatus())
+                .set(InterviewStatus::getAdjust,interviewStatus.getAdjust())
+                .set(InterviewStatus::getSecondDepartmentId,interviewStatus.getSecondDepartmentId())
+                .set(InterviewStatus::getUpdateBy,interviewStatus.getUpdateBy())
+                .set(InterviewStatus::getUpdateTime,interviewStatus.getUpdateTime())
+                .set(InterviewStatus::getFirstDepartmentId,interviewStatus.getFirstDepartmentId())
+                .eq(InterviewStatus::getId,interviewStatus.getId())
+                .update();
 
     }
 }

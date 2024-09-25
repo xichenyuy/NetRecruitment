@@ -29,4 +29,5 @@ public interface StudentService extends IService<Student> {
 
     Student getByStudentId(String studentId);
 
+    void updateStudentAndStatusAndRecordById(Student student, InterviewStatus interviewStatus);
 }

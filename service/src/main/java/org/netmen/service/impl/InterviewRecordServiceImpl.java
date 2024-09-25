@@ -356,7 +356,7 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
     }
 
     /**
-     *
+     * 初始化面试记录
      * @param studentId
      * @return
      */
