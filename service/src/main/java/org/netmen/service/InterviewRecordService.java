@@ -1,6 +1,7 @@
 package org.netmen.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.netmen.common.result.Result;
 import org.netmen.dao.po.InterviewRecord;
 import org.netmen.dao.po.InterviewStatus;
 import org.netmen.dao.po.Student;
@@ -25,7 +26,11 @@ public interface InterviewRecordService extends IService<InterviewRecord> {
 
     boolean interviewFailed(Integer studentId, Integer firstDepartmentId, Integer secondDepartmentId);
 
-    boolean falseTouchRejection(Integer studentId,Integer firstDepartmentId, Integer secondDepartmentId);
+    Integer deleted(List<Integer> studentIds);
+
+    boolean falseTouchRejection(Integer studentId, Integer firstDepartmentId, Integer secondDepartmentId);
+
+    Integer getCurPriority(Integer studentId);
 
     boolean initialize(Integer studentId);
 }

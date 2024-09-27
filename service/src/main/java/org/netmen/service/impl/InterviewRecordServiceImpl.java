@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.netmen.common.result.Result;
 import org.netmen.dao.mapper.DepartmentInterviewMapper;
 import org.netmen.dao.mapper.InterviewRecordMapper;
-import org.netmen.dao.mapper.InterviewStatusMapper;
 import org.netmen.dao.po.DepartmentInterview;
 import org.netmen.dao.po.InterviewRecord;
 import org.netmen.service.InterviewRecordService;
@@ -23,8 +22,7 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
     private InterviewRecordMapper interviewRecordMapper;
     @Autowired
     private DepartmentInterviewMapper departmentInterviewMapper;
-    @Autowired
-    private InterviewStatusMapper interviewStatusMapper;
+
 
     /**
      * 获取部门所有面试记录
@@ -235,20 +233,27 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
 
     /**
      * 删除学生记录
-     * @param studentId
+     * @param studentIds
      * @return
+     * 如果在数组中间有删除失败的话，会返回是到哪个学生的时候删除失败的
      */
-    public Result deleted(Integer studentId) {
-        LambdaQueryWrapper<InterviewRecord> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(InterviewRecord::getStudentId,studentId);
-        List<InterviewRecord> list = interviewRecordMapper.selectList(wrapper);
-        if(list.isEmpty()){
-            return Result.error().message("此学生记录不存在！");
+    @Override
+    public Integer deleted(List<Integer> studentIds) {
+        if(studentIds.isEmpty()){
+            return Integer.MIN_VALUE;
         }
-        if (list.stream().mapToInt(interviewRecord -> interviewRecordMapper.deleteById(interviewRecord)).anyMatch(res -> res == 0)) {
-            return Result.error().message("删除失败！");
+        for(int i = 0;i<studentIds.size();i++){
+            LambdaQueryWrapper<InterviewRecord> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(InterviewRecord::getStudentId,studentIds.get(i));
+            List<InterviewRecord> list = interviewRecordMapper.selectList(wrapper);
+            if(list.isEmpty()){
+                return studentIds.get(i);
+            }
+            if (list.stream().mapToInt(interviewRecord -> interviewRecordMapper.deleteById(interviewRecord)).anyMatch(res -> res == 0)) {
+                return studentIds.get(i);
+            }
         }
-        return Result.success().message("删除成功！");
+        return 0;
     }
 
 
@@ -374,6 +379,14 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
         lastOne.setDepartmentId(list.get(0).getDepartmentId());
         lastOne.setPriority(getInterviewList(lastOne.getDepartmentId()).get(0).getPriority());
         lastOne.setFailed(false);
+        //把前面所有的这个学生的记录全都逻辑删除
+        for(int i = 0;i<list.size();i++){
+           int deleteRes = interviewRecordMapper.deleteById(list.get(i));
+           if(deleteRes == 0){
+               return false;
+           }
+        }
+        //最后再插入一条
         int res = interviewRecordMapper.insert(lastOne);
         if(res == 0){
             return false;
@@ -398,5 +411,24 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
         //给这个部门所有的interview按照priority排好序
         res.sort(Comparator.comparing(DepartmentInterview::getPriority));
         return res;
+    }
+
+    /**
+     *
+     * @param studentId
+     * @return
+     * 传入学生id之后，会获得一个这个学生当前所属的面试轮次
+     * 如果没有这个学生的面试记录，会拿到一个最大的数字65535
+     */
+    @Override
+    public Integer getCurPriority(Integer studentId){
+        LambdaQueryWrapper<InterviewRecord> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(InterviewRecord::getStudentId,studentId);
+        List<InterviewRecord> interviewRecordList = interviewRecordMapper.selectList(wrapper);
+        if(interviewRecordList.isEmpty()){
+            return Integer.MAX_VALUE;
+        }
+        //拿到最新一轮的面试
+        return interviewRecordList.get(interviewRecordList.size()-1).getPriority();
     }
 }

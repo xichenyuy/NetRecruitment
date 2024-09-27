@@ -2,6 +2,7 @@ package org.netmen.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.netmen.common.result.Result;
 import org.netmen.dao.po.InterviewRecord;
 import org.netmen.dao.po.InterviewStatus;
@@ -9,6 +10,7 @@ import org.netmen.service.InterviewRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +75,31 @@ public class InterviewRecordController {
     /**
      * 以下接口均为测试方法，可以不用看
      */
+    @PostMapping("/{studentId}")
+    @Operation(summary = "看看能不能查找到priority")
+    public Result getCurpriority(@PathVariable Integer studentId){
+        int res = interviewRecordService.getCurPriority(studentId);
+        if(res == Integer.MAX_VALUE){
+            return Result.error();
+        }
+        Map<String,Integer> map = new HashMap<>();
+        map.put("priority",res);
+        return Result.success().message("查找成功").data(map);
+    }
+
+    @PostMapping("/deleted")
+    @Operation(summary = "删除一组学生的所有数据")
+    public  Result deleted(@RequestParam List<Integer> list){
+        int res = interviewRecordService.deleted(list);
+        if(res == Integer.MIN_VALUE){
+            return Result.error().message("传入的list为空");
+        }else if(res != 0){
+            Map<String, Integer> map = new HashMap<>();
+            map.put("studentId",res);
+            return Result.error().message("删除失败").data(map);
+        }
+        return Result.success().message("删除成功");
+    }
 //    @PostMapping("/{studentId}")
 //    @Operation(summary = "插入第一条数据")
 //    public Result initStudentInterviewRecord(@PathVariable Integer studentId,Integer currentDepartmentId){
@@ -112,13 +139,13 @@ public class InterviewRecordController {
 //        return Result.error();
 //    }
 //
-//    @PostMapping("/initialize/{studentId}")
-//    @Operation(summary = "初始化")
-//    public Result initialize(@PathVariable Integer studentId){
-//        if(interviewRecordService.initialize(studentId))
-//            return Result.success();
-//        return Result.error();
-//    }
+    @PostMapping("/initialize/{studentId}")
+    @Operation(summary = "初始化")
+    public Result initialize(@PathVariable Integer studentId){
+        if(interviewRecordService.initialize(studentId))
+            return Result.success();
+        return Result.error();
+    }
 //
 //   @PostMapping("/adjust/{studentId}")
 //   @Operation(summary = "调剂")
