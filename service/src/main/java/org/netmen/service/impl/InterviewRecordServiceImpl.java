@@ -209,9 +209,9 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
             return false;
         }
         //同时应该要考虑是从哪里淘汰掉的，是从第一志愿淘汰的，还是从第二志愿淘汰的，还是被调剂部门淘汰的
-        if(lastInterviewRecord.getDepartmentId().equals(firstDepartmentId) ||
-            firstDepartmentId == secondDepartmentId){
-            //加入会有第一志愿和第二志愿相同的情况
+        if(lastInterviewRecord.getDepartmentId().equals(firstDepartmentId) &&
+                !firstDepartmentId.equals(secondDepartmentId)){
+            //假如会有第一志愿和第二志愿相同的情况,这种情况应该是直接跳过第二志愿
             //插入新一轮的开始
             insertNewRecord(studentId,secondDepartmentId,0);
         }
@@ -277,67 +277,82 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
         }
         if(list.size()>=2){
             InterviewRecord cur = list.get(list.size()-1);
-            InterviewRecord newNow = new InterviewRecord();
-            int newPriority = 0;
-            int newDepartmentId = 0;
-            boolean newStatus = false;
-
-            if(cur.getDepartmentId().equals(firstDepartmentId)){
-                List<DepartmentInterview> firstDepartmentInterviews = getInterviewList(firstDepartmentId);
-                newDepartmentId = firstDepartmentId;
-                if(cur.getPriority().equals(firstDepartmentInterviews.get(0).getPriority())){
-                    newPriority = cur.getPriority();
-                }else{
-                    newPriority = getNextPriority(firstDepartmentInterviews,-1, cur.getPriority());
-                }
-            }
-            else if(cur.getDepartmentId().equals(secondDepartmentId)){
-                List<DepartmentInterview> firstDepartmentInterviews = getInterviewList(firstDepartmentId);
-                List<DepartmentInterview> secondDepartmentInterviews = getInterviewList(secondDepartmentId);
-                if(cur.getPriority()==0){
-                    //说明要回到第一志愿里
-                    newPriority = firstDepartmentInterviews.get(firstDepartmentInterviews.size()-1).getPriority();
-                    newDepartmentId = firstDepartmentId;
-                }
-                else if(cur.getPriority()==1){
-                    //回退到没被选择的状态
-                    newPriority = 0;
-                    newDepartmentId = secondDepartmentId;
-                }
-                else{
-                    newDepartmentId = secondDepartmentId;
-                    newPriority = getNextPriority(secondDepartmentInterviews,-1, cur.getPriority());
-                }
-            }
-            else{
-                List<DepartmentInterview> secondDepartmentInterviews = getInterviewList(secondDepartmentId);
-                List<DepartmentInterview> adjustDepartmentInterviews = getInterviewList(cur.getDepartmentId());
-                if(cur.getPriority().equals(adjustDepartmentInterviews.get(0).getPriority())){
-                    //说明调剂部门不要ta
-                    //让ta的状态维持在第二志愿被淘汰的的时候
-                    newPriority = secondDepartmentInterviews.get(secondDepartmentInterviews.size()-1).getPriority();
-                    newDepartmentId = secondDepartmentId;
-                    newStatus = true;
-                }else{
-                    newDepartmentId = secondDepartmentId;
-                    newPriority = getNextPriority(adjustDepartmentInterviews,-1,cur.getPriority());
-                }
-            }
+//            InterviewRecord newNow = new InterviewRecord();
+            InterviewRecord newNow = list.get(list.size()-2);
+//            int newPriority = 0;
+//            int newDepartmentId = 0;
+//            boolean newStatus = false;
 
 
-            newNow.setDeleted(false);
-            newNow.setFailed(newStatus);
-            newNow.setStudentId(studentId);
-            newNow.setDepartmentId(newDepartmentId);
-            newNow.setPriority(newPriority);
+//            if(cur.getDepartmentId().equals(firstDepartmentId)){
+//                List<DepartmentInterview> firstDepartmentInterviews = getInterviewList(firstDepartmentId);
+//                newDepartmentId = firstDepartmentId;
+//                if(cur.getPriority().equals(firstDepartmentInterviews.get(0).getPriority())){
+//                    newPriority = cur.getPriority();
+//                }else{
+//                    newPriority = getNextPriority(firstDepartmentInterviews,-1, cur.getPriority());
+//                }
+//            }
+//            else if((!Objects.equals(firstDepartmentId, secondDepartmentId))
+//                    &&cur.getDepartmentId().equals(secondDepartmentId)){
+//                List<DepartmentInterview> firstDepartmentInterviews = getInterviewList(firstDepartmentId);
+//                List<DepartmentInterview> secondDepartmentInterviews = getInterviewList(secondDepartmentId);
+//                if(cur.getPriority()==0){
+//                    //说明要回到第一志愿里并且第一志愿和第二志愿不是同一个部门
+//                    //要回到在第一志愿被淘汰的那一轮
+//                    boolean flag = false;
+//                    for(int i = list.size()-1;i>=0;i--){
+//                        InterviewRecord interviewRecord = list.get(i);
+//                        if(interviewRecord.getDepartmentId().equals(firstDepartmentId)&&
+//                        interviewRecord.getFailed().equals(true)){
+//                            newPriority = interviewRecord.getPriority();
+//                            flag = true;
+//                            break;
+//                        }
+//                    }
+//                    if(!flag){
+//                        newPriority = firstDepartmentInterviews.get(firstDepartmentInterviews.size()-1).getPriority();
+//                    }
+//                    newDepartmentId = firstDepartmentId;
+//                }
+//                else if(cur.getPriority()==1){
+//                    //回退到没被选择的状态
+//                    newPriority = 0;
+//                    newDepartmentId = secondDepartmentId;
+//                }
+//                else{
+//                    newDepartmentId = secondDepartmentId;
+//                    newPriority = getNextPriority(secondDepartmentInterviews,-1, cur.getPriority());
+//                }
+//            }
+//            else{
+//                List<DepartmentInterview> secondDepartmentInterviews = getInterviewList(secondDepartmentId);
+//                List<DepartmentInterview> adjustDepartmentInterviews = getInterviewList(cur.getDepartmentId());
+//                if(cur.getPriority().equals(adjustDepartmentInterviews.get(0).getPriority())){
+//                    //说明调剂部门不要ta
+//                    //让ta的状态维持在第二志愿被淘汰的的时候
+//                    //要找到ta在第二志愿哪一轮面试被淘汰
+//                    newPriority = secondDepartmentInterviews.get(secondDepartmentInterviews.size()-1).getPriority();
+//                    newDepartmentId = secondDepartmentId;
+//                    newStatus = true;
+//                }else{
+//                    newDepartmentId = secondDepartmentId;
+//                    newPriority = getNextPriority(adjustDepartmentInterviews,-1,cur.getPriority());
+//                }
+//            }
 
-            int insertRes = interviewRecordMapper.insert(newNow);
+            newNow.setFailed(false);
+//            newNow.setStudentId(studentId);
+//            newNow.setDepartmentId(newDepartmentId);
+//            newNow.setPriority(newPriority);
+
+            //int insertRes = interviewRecordMapper.insert(newNow);
 
 
-            cur.setFailed(false);
-            int updateRes = interviewRecordMapper.updateById(cur);
-
-            if(insertRes!=0&&updateRes!=0){
+            //cur.setFailed(false);
+            int updateRes = interviewRecordMapper.updateById(newNow);
+            int deleteRes = interviewRecordMapper.deleteById(cur);
+            if(updateRes!=0&&deleteRes!=0){
                 return true;
             }
         }else if(list.size()==1){
