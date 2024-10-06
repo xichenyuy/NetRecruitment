@@ -343,30 +343,30 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
 
             //只考虑部内回退的事，在淘汰之后没有权限回退
             //如果只是想从当前面试回退到上一轮面试，那就删除最后一条数据
-            if(cur.getDepartmentId().equals(newNow.getDepartmentId())&&!cur.getFailed()){
-                int deleteRes = interviewRecordMapper.deleteById(cur);
-                if(deleteRes!=0){
-                    return true;
-                }
-            }
-            //如果是想从第二志愿预面试回退到第一志愿,那么就要删掉第二志愿预面试的记录，同时要把第一志愿的淘汰记录修改掉
-            if(cur.getDepartmentId().equals(secondDepartmentId)&&cur.getPriority().equals(0)){
-                newNow.setFailed(false);
-                int deleteRes = interviewRecordMapper.deleteById(cur);
-                int updateRes = interviewRecordMapper.updateById(newNow);
-                if(updateRes!=0&&deleteRes!=0){
-                    return true;
-                }
-            }
-            //如果是调剂部门想要取消选择这个学生,就只删掉这条记录，不用改变第二志愿的淘汰结果
-            if(!cur.getDepartmentId().equals(firstDepartmentId)&&
-                !cur.getDepartmentId().equals(secondDepartmentId)){
-
-                int deleteRes = interviewRecordMapper.deleteById(cur);
-                if(deleteRes!=0){
-                    return true;
-                }
-            }
+//            if(cur.getDepartmentId().equals(newNow.getDepartmentId())&&!cur.getFailed()){
+//                int deleteRes = interviewRecordMapper.deleteById(cur);
+//                if(deleteRes!=0){
+//                    return true;
+//                }
+//            }
+//            //如果是想从第二志愿预面试回退到第一志愿,那么就要删掉第二志愿预面试的记录，同时要把第一志愿的淘汰记录修改掉
+//            if(cur.getDepartmentId().equals(secondDepartmentId)&&cur.getPriority().equals(0)){
+//                newNow.setFailed(false);
+//                int deleteRes = interviewRecordMapper.deleteById(cur);
+//                int updateRes = interviewRecordMapper.updateById(newNow);
+//                if(updateRes!=0&&deleteRes!=0){
+//                    return true;
+//                }
+//            }
+//            //如果是调剂部门想要取消选择这个学生,就只删掉这条记录，不用改变第二志愿的淘汰结果
+//            if(!cur.getDepartmentId().equals(firstDepartmentId)&&
+//                !cur.getDepartmentId().equals(secondDepartmentId)){
+//
+//                int deleteRes = interviewRecordMapper.deleteById(cur);
+//                if(deleteRes!=0){
+//                    return true;
+//                }
+//            }
 //            newNow.setStudentId(studentId);
 //            newNow.setDepartmentId(newDepartmentId);
 //            newNow.setPriority(newPriority);
@@ -375,6 +375,18 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
 
 
             //cur.setFailed(false);
+            if(cur.getFailed()){
+                cur.setFailed(false);
+                int updateRes = interviewRecordMapper.updateById(cur);
+                if(updateRes!=0){
+                    return true;
+                }
+            }else{
+                int deleteRes = interviewRecordMapper.deleteById(cur);
+                if(deleteRes!=0){
+                    return true;
+                }
+            }
         }else{
             InterviewRecord cur = list.get(0);
             cur.setFailed(false);
