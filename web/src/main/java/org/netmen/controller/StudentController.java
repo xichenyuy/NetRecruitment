@@ -92,6 +92,8 @@ public class StudentController {
             InterviewStatus interviewStatus = new InterviewStatus();
             BeanUtils.copyProperties(studentDTOId, student);
             BeanUtils.copyProperties(studentDTOId, interviewStatus);
+            interviewStatus.setCurDepartmentId(studentDTOId.getFirstDepartmentId());
+            interviewStatus.setStatus((short)0);
             log.info("student表id：{}", student.getId());
             studentService.updateStudentAndStatusAndRecordById(student,interviewStatus);
             return Result.success().message("修改成功");

@@ -27,6 +27,9 @@ public class InterviewStatusController {
     public Result getInterviewStatusById(@PathVariable("id") Integer id) {
         try {
             InterviewStatus interviewStatus = interviewStatusService.getById(id);
+            if (interviewStatus == null) {
+                return Result.error().message("未找到该学生");
+            }
             return Result.success().data(interviewStatus);
         } catch (Exception e) {
             return Result.error().message("查询失败");

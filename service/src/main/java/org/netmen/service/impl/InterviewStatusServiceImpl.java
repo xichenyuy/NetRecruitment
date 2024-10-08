@@ -8,6 +8,7 @@ import org.netmen.service.InterviewRecordService;
 import org.netmen.service.InterviewStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -22,6 +23,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
      * @param id
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void interviewFailed(Integer id) {
         InterviewStatus interviewStatus = getById(id);
         Boolean adjust = interviewStatus.getAdjust();
@@ -107,6 +109,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
      * 面试通过
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void interviewPass(Integer id) {
         InterviewStatus interviewStatus = getById(id);
 
@@ -125,6 +128,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
      * 调剂部门挑选接口
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void adjustDepartmentSelect(Integer departmentId, Integer id) {
         InterviewStatus interviewStatus = getById(id);
         lambdaUpdate()
@@ -141,12 +145,18 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
      * @param id
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void falseTouchRejection(Integer id) {
         InterviewStatus interviewStatus = getById(id);
+        Short status = interviewStatus.getStatus();
+        Integer curDepartmentId = interviewStatus.getCurDepartmentId();
+        Integer firstDepartmentId = interviewStatus.getFirstDepartmentId();
+        Integer secondDepartmentId = interviewStatus.getSecondDepartmentId();
+        Integer curPriority = interviewRecordService.getCurPriority(id);
         // 如果当前为待面试状态
-        if (interviewStatus.getStatus().equals((short) 0)) {
-            // 1.如果当前处于第二志愿部门面试
-            if (interviewStatus.getCurDepartmentId().equals(interviewStatus.getSecondDepartmentId())) {
+        if (status.equals(Short.valueOf("0"))) {
+            // 1.如果当前处于第二志愿部门面试且处于待面试状态，回退到第一志愿部门
+            if (curDepartmentId.equals(secondDepartmentId) && curPriority == 0) {
                 // 回退到第一志愿部门
                 lambdaUpdate()
                         .set(InterviewStatus::getCurDepartmentId, interviewStatus.getFirstDepartmentId())
@@ -154,23 +164,27 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
                         .eq(InterviewStatus::getCurDepartmentId, interviewStatus.getCurDepartmentId())
                         .update();
                 interviewRecordService.falseTouchRejection(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
-            } else {
-                // 回退到第二志愿部门
+                return;
+            }
+            // 处于调剂部门，处于调剂部门第一面，回退到第二志愿部门
+            if (curDepartmentId != firstDepartmentId && curDepartmentId != secondDepartmentId && curPriority == 1){
                 lambdaUpdate()
                         .set(InterviewStatus::getCurDepartmentId, interviewStatus.getSecondDepartmentId())
                         .eq(InterviewStatus::getId, id)
                         .eq(InterviewStatus::getCurDepartmentId, interviewStatus.getCurDepartmentId())
                         .update();
                 interviewRecordService.falseTouchRejection(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
+                return;
             }
-        } else if (interviewStatus.getStatus().equals(((short) 1))) {
+            interviewRecordService.falseTouchRejection(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
+        } else if (status.equals(Short.valueOf("1"))) {
             // 当前为录取状态,则回退为待面试状态
             lambdaUpdate()
-                    .set(InterviewStatus::getStatus, ((short) 0))
+                    .set(InterviewStatus::getStatus, Short.valueOf("0"))
                     .eq(InterviewStatus::getId, id)
                     .eq(InterviewStatus::getStatus, interviewStatus.getStatus())
                     .update();
-            interviewRecordService.falseTouchRejection(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
+                interviewRecordService.falseTouchRejection(id, interviewStatus.getFirstDepartmentId(), interviewStatus.getSecondDepartmentId());
         } else {
             // 当前为淘汰状态,则回退为待面试状态
             lambdaUpdate()
@@ -188,6 +202,7 @@ public class InterviewStatusServiceImpl extends ServiceImpl<InterviewStatusMappe
      * @param id
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void initialize(Integer id) {
         InterviewStatus interviewStatus = getById(id);
         lambdaUpdate()

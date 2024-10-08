@@ -76,6 +76,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     public void deleteStudentByIds(List<Integer> ids) {
         studentMapper.deleteBatchIds(ids);
         interviewStatusMapper.deleteBatchIds(ids);
+        interviewRecordService.deleted(ids);
 
     }
 
@@ -96,16 +97,18 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     @Transactional(rollbackFor = Exception.class)
     public void updateStudentAndStatusAndRecordById(Student student, InterviewStatus interviewStatus) {
         updateById(student);
-        Db.lambdaUpdate(InterviewStatus.class)
-                .set(InterviewStatus::getCurDepartmentId,interviewStatus.getCurDepartmentId())
-                .set(InterviewStatus::getStatus,interviewStatus.getStatus())
-                .set(InterviewStatus::getAdjust,interviewStatus.getAdjust())
-                .set(InterviewStatus::getSecondDepartmentId,interviewStatus.getSecondDepartmentId())
-                .set(InterviewStatus::getUpdateBy,interviewStatus.getUpdateBy())
-                .set(InterviewStatus::getUpdateTime,interviewStatus.getUpdateTime())
-                .set(InterviewStatus::getFirstDepartmentId,interviewStatus.getFirstDepartmentId())
-                .eq(InterviewStatus::getId,interviewStatus.getId())
-                .update();
+//        ;Db.lambdaUpdate(InterviewStatus.class)
+////                .set(InterviewStatus::getCurDepartmentId,interviewStatus.getCurDepartmentId())
+////                .set(InterviewStatus::getStatus,interviewStatus.getStatus())
+////                .set(InterviewStatus::getAdjust,interviewStatus.getAdjust())
+////                .set(InterviewStatus::getSecondDepartmentId,interviewStatus.getSecondDepartmentId())
+////                .set(InterviewStatus::getUpdateBy,interviewStatus.getUpdateBy())
+////                .set(InterviewStatus::getUpdateTime,interviewStatus.getUpdateTime())
+////                .set(InterviewStatus::getFirstDepartmentId,interviewStatus.getFirstDepartmentId())
+////                .eq(InterviewStatus::getId,interviewStatus.getId())
+////                .update()
+        interviewStatusMapper.updateById(interviewStatus);
+        interviewRecordService.initialize(student.getId());
 
     }
 }

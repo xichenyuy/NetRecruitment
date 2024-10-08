@@ -27,7 +27,7 @@ public class StudentDTOId {
     private Short political;
     private Integer firstDepartmentId;
     private Integer secondDepartmentId;
-    private Short adjust;
+    private Boolean adjust;
     private String photo;
     private String introduce;
     private String hobbies;
