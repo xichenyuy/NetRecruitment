@@ -108,6 +108,15 @@ public class InterviewRecordController {
         return Result.error();
     }
 
+    @PostMapping("/adjust")
+    @Operation(summary = "插入调剂后的第一条数据")
+    public Result adjust(Integer studentId,Integer adjustDepartmentId){
+        if(interviewRecordService.adjustStudentInterviewRecord(studentId,adjustDepartmentId)){
+            return Result.success();
+        }
+        return Result.error();
+    }
+
     @PostMapping("/update/{studentId}")
     @Operation(summary = "更新面试者的记录")
     public Result interviewPass(@PathVariable Integer studentId, Integer curDepartmentId){
@@ -116,6 +125,8 @@ public class InterviewRecordController {
             return Result.success().message("通过所有面试，待录取");
         }else if(res == 0){
             return Result.success().message("继续面试");
+        }else if(res == 3){
+            return Result.error().message("departmentInterviewList is Empty");
         }
         return Result.error().message("更新失败！");
     }

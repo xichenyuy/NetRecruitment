@@ -157,16 +157,20 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
         if(list.isEmpty()){
             return 2;
         }
+
         //找出当前部门的所有priority
         List<DepartmentInterview> departmentInterviewList = getInterviewList(curDepartmentId);
         if(departmentInterviewList.isEmpty()){
-            return 2;
+            System.out.println("departmentInterviewList is Empty");
+            return 3;
         }
         InterviewRecord curInterviewRecord = list.get(list.size()-1);
-        if(curInterviewRecord.getPriority().equals(departmentInterviewList.get(departmentInterviewList.size()-1).getPriority())){
+        if(curInterviewRecord.getPriority().equals(departmentInterviewList.get(departmentInterviewList.size()-1).getPriority())
+                &&!curInterviewRecord.getFailed()){
             //说明已经完成了所有的面试流程
             return 1;//被录取了
         }
+
         //如果接下来还有面试，那就插入数据
         //先找出来当前是哪个priority
 
@@ -375,13 +379,23 @@ public class InterviewRecordServiceImpl extends ServiceImpl<InterviewRecordMappe
 
 
             //cur.setFailed(false);
-            if(cur.getFailed()){
+            //如果是要回退到第一志愿的最后一轮
+            if(cur.getDepartmentId().equals(secondDepartmentId)&&cur.getPriority().equals(0)){
+                newNow.setFailed(false);
+                int updateRes = interviewRecordMapper.updateById(newNow);
+                int deleteRes = interviewRecordMapper.deleteById(cur);
+                if(updateRes!=0&&deleteRes!=0){
+                    return true;
+                }
+            } else if(cur.getFailed()){
+                //只要不是回退到第一志愿的最后一轮，只是要捞回来
                 cur.setFailed(false);
                 int updateRes = interviewRecordMapper.updateById(cur);
                 if(updateRes!=0){
                     return true;
                 }
             }else{
+                //只是要回到上一轮面试
                 int deleteRes = interviewRecordMapper.deleteById(cur);
                 if(deleteRes!=0){
                     return true;
